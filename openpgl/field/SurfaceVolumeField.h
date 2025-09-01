@@ -561,6 +561,13 @@ struct SurfaceVolumeField : public ISurfaceVolumeField
         return field;
     }
 
+    void sDump(SDump *sDump) const override {
+        sDump->sur = new SDumpTree;
+        m_surfaceField.sDump(sDump->sur);
+        sDump->vol = new SDumpTree;
+        m_volumeField.sDump(sDump->vol);
+    }
+
    private:
     size_t m_iteration{0};
     size_t m_totalSPP{0};

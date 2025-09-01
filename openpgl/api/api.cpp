@@ -316,6 +316,12 @@ extern "C" OPENPGL_DLLEXPORT void pglFieldReleaseFieldGPU(PGLField field, void *
     return gField->ReleaseFieldData(static_cast<openpgl::gpu::FieldData *>(fieldData), static_cast<openpgl::gpu::Device *>(deviceGPU));
 }
 
+extern "C" OPENPGL_DLLEXPORT void pglFieldSDump(PGLField field, SDump* sdump)
+{
+    const auto *gField = (const IGuidingField *)field;
+    gField->sDump(sdump);
+}
+
 ///////////////////////////////////////////////////////////////////////////////
 // SampleStorage //////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

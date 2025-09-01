@@ -18,6 +18,7 @@
 #include "samplestorage.h"
 #include "surfacesamplingdistribution.h"
 #include "volumesamplingdistribution.h"
+#include "sdump.h"
 
 #ifdef __cplusplus
 extern "C"
@@ -82,6 +83,8 @@ OPENPGL_CORE_INTERFACE void *pglFieldGetVolumeNodes(PGLField field);
 OPENPGL_CORE_INTERFACE int pglFieldGetNumVolumeDistributions(PGLField field);
 OPENPGL_CORE_INTERFACE void pglFieldCopyVolumeDistributions(PGLField field, void *out);
 */
+    OPENPGL_CORE_INTERFACE void pglFieldSDump(PGLField field, SDump* sdump);
+
 #ifdef __cplusplus
 }  // extern "C"
 #endif

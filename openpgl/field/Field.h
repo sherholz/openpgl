@@ -720,6 +720,10 @@ struct Field
         return stats;
     }
 
+    void sDump(SDumpTree *sDump) const {
+        m_spatialSubdiv.sDump(sDump);
+    }
+
    private:
     bool m_isSurface{true};
 

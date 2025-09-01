@@ -6,6 +6,7 @@
 #include "../data/SampleDataStorage.h"
 #include "../directional/ISurfaceSamplingDistribution.h"
 #include "../directional/IVolumeSamplingDistribution.h"
+#include "../include/openpgl/sdump.h"
 
 namespace openpgl
 {
@@ -72,5 +73,7 @@ struct ISurfaceVolumeField
     virtual int GetNumDistributions(bool isSurface = true) const = 0;
     virtual void CopyDistributionsTo(void *o_distrib, bool isSurface = true) const = 0;
     */
+
+    virtual void sDump(SDump *sDump) const = 0;
 };
 }  // namespace openpgl

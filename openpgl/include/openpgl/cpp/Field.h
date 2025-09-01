@@ -132,6 +132,8 @@ struct Field
     /// Checks if the spatial structure and directional distribution of this Field are similar to the ones stored in another Field.
     bool operator==(const Field &b) const;
 
+    void sDump(SDump* sDump) const;
+
     friend struct openpgl::cpp::SurfaceSamplingDistribution;
     friend struct openpgl::cpp::VolumeSamplingDistribution;
 
@@ -336,5 +338,12 @@ OPENPGL_INLINE void* Field::GetMeanDirections() const
     return pglFieldGetMeanDirections(m_fieldHandle);
 }
 #endif
+
+OPENPGL_INLINE void Field::sDump(SDump* sDump) const
+{
+    OPENPGL_ASSERT(m_fieldHandle);
+    return pglFieldSDump(m_fieldHandle, sDump);
+}
+
 }  // namespace cpp
 }  // namespace openpgl
