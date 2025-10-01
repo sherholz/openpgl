@@ -74,6 +74,9 @@ option(BUILD_OIDN "Build OpenImageDenoise as a part of the superbuild." ON)
 option(BUILD_OIDN_FROM_SOURCE "Build OpenImageDenoise or use pre-built version?" ON)
 option(DOWNLOAD_ISPC "Download ISPC or use the one found in the system environment?" ON)
 
+option(BUILD_EMBREE "Build Embree as a part of the superbuild." ON)
+option(BUILD_EMBREE_FROM_SOURCE "Build Embree or use pre-built version?" OFF)
+
 ## ======================================================================== ##
 ## Build dependencies.
 ##
@@ -142,6 +145,11 @@ if (DOWNLOAD_ISPC AND BUILD_OIDN_FROM_SOURCE)
     endif()
   endif()
   include(dep_ispc)
+endif()
+
+if (BUILD_EMBREE)
+  set(EMBREE_VERSION "4.4.0" CACHE STRING "Which version of Embree to build?")
+  include(dep_embree)
 endif()
 
 if (BUILD_OIDN)
@@ -278,6 +286,7 @@ endif()
   ExternalProject_Add_StepDependencies(ep_openpgl
   configure
     $<$<BOOL:${BUILD_TBB}>:dep_tbb>
+    $<$<BOOL:${BUILD_EMBREE}>:embree>   
     $<$<BOOL:${BUILD_OIDN}>:oidn>    
   )
 endif()

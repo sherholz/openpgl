@@ -58,6 +58,8 @@ OPTION(OPENPGL_EF_IMAGE_SPACE_GUIDING_BUFFER "Enables experimental feature Image
 OPTION(OPENPGL_DIRECTION_COMPRESSION "Using 32-Bit compression to represent directions." OFF)
 OPTION(OPENPGL_RADIANCE_COMPRESSION "Using RGBE 32-Bit compression to represent radiance data (linear RGB)." OFF)
 
+OPTION(OPENPGL_KNN_EMBREE "Using Embree for the KNN look ups." ON)
+
 if(COMPILER_SUPPORTS_ARM_NEON)
   option(OPENPGL_ISA_NEON "Build with support for NEON." ON)
   option(OPENPGL_ISA_NEON2X "Build with support for NEON double pumped." ON)
@@ -91,6 +93,10 @@ FIND_PACKAGE(TBB REQUIRED ${OPENPGL_TBB_COMPONENT})
 if (OPENPGL_EF_IMAGE_SPACE_GUIDING_BUFFER)
   FIND_PACKAGE(OpenImageDenoise 2.2.0 REQUIRED)
   #FIND_PACKAGE(ZLIB REQUIRED)
+endif()
+
+if (OPENPGL_KNN_EMBREE)
+  FIND_PACKAGE(Embree 4.4.0 REQUIRED)
 endif()
 
 ## Global compiler setup
