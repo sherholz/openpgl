@@ -43,6 +43,7 @@ struct ImageSpaceGuidingBuffer
             spp = new float[numPixels];
 
             filteredContribution = new pgl_vec3f[numPixels];
+            reset();
         }
 
         Buffers(const Buffers &buffer) = delete;
