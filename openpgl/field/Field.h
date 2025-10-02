@@ -17,7 +17,6 @@
 #include <tbb/parallel_for.h>
 #include <tbb/parallel_sort.h>
 #endif
-#define USE_PRECOMPUTED_NN 1
 
 namespace openpgl
 {
@@ -117,23 +116,24 @@ struct Field
         {
             if (m_useStochasticNNLookUp && *sample1D >= 0.f)
             {
-                if (USE_PRECOMPUTED_NN)
+#if defined(PGL_KNN_PRECOMPUTED_NN)
+
+                uint32_t regionIdx = getApproximateClosestRegionIdx(m_regionKNNSearchTree, p, sample1D, id);
+                return &m_regionStorageContainer[regionIdx].first;
+
+#else
+
+                uint32_t regionIdx = getClosestRegionIdx(m_regionKNNSearchTree, p, sample1D, id);
+                if (regionIdx != -1)
                 {
-                    uint32_t regionIdx = getApproximateClosestRegionIdx(m_regionKNNSearchTree, p, sample1D, id);
                     return &m_regionStorageContainer[regionIdx].first;
                 }
                 else
                 {
-                    uint32_t regionIdx = getClosestRegionIdx(m_regionKNNSearchTree, p, sample1D, id);
-                    if (regionIdx != -1)
-                    {
-                        return &m_regionStorageContainer[regionIdx].first;
-                    }
-                    else
-                    {
-                        return nullptr;
-                    }
+                    return nullptr;
                 }
+
+#endif
             }
             else
             {
@@ -341,11 +341,12 @@ struct Field
         is.read(reinterpret_cast<char *>(&m_useStochasticNNLookUp), sizeof(m_useStochasticNNLookUp));
         is.read(reinterpret_cast<char *>(&m_useISNNLookUp), sizeof(m_useISNNLookUp));
         m_regionKNNSearchTree.deserialize(is);
-
-        if (m_useStochasticNNLookUp && USE_PRECOMPUTED_NN && m_regionKNNSearchTree.isBuild())
+#if defined(PGL_KNN_)
+        if (m_useStochasticNNLookUp && m_regionKNNSearchTree.isBuild())
         {
             m_regionKNNSearchTree.buildRegionNeighbours();
         }
+#endif
     }
 
     bool isValid() const
@@ -411,10 +412,9 @@ struct Field
         if (m_useStochasticNNLookUp)
         {
             m_regionKNNSearchTree.buildRegionSearchTree(m_regionStorageContainer);
-            if (USE_PRECOMPUTED_NN)
-            {
-                m_regionKNNSearchTree.buildRegionNeighbours();
-            }
+#if defined(PGL_KNN_PRECOMPUTED_NN)
+            m_regionKNNSearchTree.buildRegionNeighbours();
+#endif
         }
     }
 
@@ -426,10 +426,9 @@ struct Field
         {
             m_regionKNNSearchTree.reset();
             m_regionKNNSearchTree.buildRegionSearchTree(m_regionStorageContainer);
-            if (USE_PRECOMPUTED_NN)
-            {
-                m_regionKNNSearchTree.buildRegionNeighbours();
-            }
+#if defined(PGL_KNN_PRECOMPUTED_NN)
+            m_regionKNNSearchTree.buildRegionNeighbours();
+#endif
         }
     }
 

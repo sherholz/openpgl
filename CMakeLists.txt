@@ -59,6 +59,7 @@ OPTION(OPENPGL_DIRECTION_COMPRESSION "Using 32-Bit compression to represent dire
 OPTION(OPENPGL_RADIANCE_COMPRESSION "Using RGBE 32-Bit compression to represent radiance data (linear RGB)." OFF)
 
 OPTION(OPENPGL_KNN_EMBREE "Using Embree for the KNN look ups." ON)
+OPTION(OPENPGL_KNN_PRECOMPUTED_NN "Using precompute nearest-neighbor lists for the KNN look ups." ON)
 
 if(COMPILER_SUPPORTS_ARM_NEON)
   option(OPENPGL_ISA_NEON "Build with support for NEON." ON)

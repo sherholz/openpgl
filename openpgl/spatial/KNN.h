@@ -323,7 +323,7 @@ struct KNearestRegionsSearchTree
         Point const *const points;
     };
 
-    void pointBoundsFunc(const struct RTCBoundsFunctionArguments *args)
+    static void pointBoundsFunc(const struct RTCBoundsFunctionArguments *args)
     {
         const Point *points = (const Point *)args->geometryUserPtr;
         RTCBounds *bounds_o = args->bounds_o;
@@ -349,6 +349,8 @@ struct KNearestRegionsSearchTree
         const float d = distance(point.p, q);
 
         result->visited.push_back(primID);
+        // If the distance to the query point is smaller to the query radius and there is still place in the result list
+        // or if the distance to the query point is smaller thna the largest distance in the NN list.
 
         if (d < query->radius && (result->knn.size() < result->k || d < result->knn.top().d))
         {
@@ -371,7 +373,7 @@ struct KNearestRegionsSearchTree
         return false;
     }
 
-    void knnQuery(embree::Vec3f const &q, float radius, KNNResult *result)
+    void knnQuery(embree::Vec3f const &q, float radius, KNNResult *result) const
     {
         RTCPointQuery query;
         query.x = q.x;
@@ -407,7 +409,12 @@ struct KNearestRegionsSearchTree
 #endif
     using RN = RegionNeighbours<Vecsize>;
 
-    KNearestRegionsSearchTree() = default;
+    KNearestRegionsSearchTree()
+    {
+#if defined(PGL_KNN_EMBREE)
+        device = rtcNewDevice("threads=0");
+#endif
+    }
 
     KNearestRegionsSearchTree(const KNearestRegionsSearchTree &) = delete;
 
@@ -415,6 +422,10 @@ struct KNearestRegionsSearchTree
     {
         alignedFree(points);
         alignedFree(neighbours);
+#if defined(PGL_KNN_EMBREE)
+        rtcReleaseDevice(device);
+        rtcReleaseScene(scene);
+#endif
     }
 
     template <typename TRegionStorageContainer>
@@ -427,14 +438,30 @@ struct KNearestRegionsSearchTree
         }
         points = (Point *)alignedMalloc(num_points * sizeof(Point), 32);
 
+#if defined(PGL_KNN_EMBREE)
+        rtcReleaseScene(scene);
+        scene = rtcNewScene(device);
+        RTCGeometry geom = rtcNewGeometry(device, RTC_GEOMETRY_TYPE_USER);
+        unsigned int geomID = rtcAttachGeometry(scene, geom);
+#endif
+
         for (size_t i = 0; i < num_points; i++)
         {
             const auto &region = regionStorage[i].first;
             const openpgl::Point3 distributionPivot = region.regionPivot;
             points[i].p = embree::Vec3f(distributionPivot[0], distributionPivot[1], distributionPivot[2]);
+#if defined(PGL_KNN_EMBREE)
+            points[i].geometry = geom;
+            points[i].geomID = geomID;
+#endif
         }
 #if defined(PGL_KNN_EMBREE)
-
+        rtcSetGeometryUserPrimitiveCount(geom, num_points);
+        rtcSetGeometryUserData(geom, points);
+        rtcSetGeometryBoundsFunction(geom, pointBoundsFunc, nullptr);
+        rtcCommitGeometry(geom);
+        rtcReleaseGeometry(geom);
+        rtcCommitScene(scene);
 #else
         index = std::unique_ptr<Index>(new Index(3, *this, 10));
 #endif
@@ -450,6 +477,7 @@ struct KNearestRegionsSearchTree
         {
             alignedFree(neighbours);
         }
+
         neighbours = (RN *)alignedMalloc(num_points * sizeof(RN), 32);
 
         tbb::parallel_for(tbb::blocked_range<int>(0, num_points), [&](tbb::blocked_range<int> r) {
@@ -457,14 +485,16 @@ struct KNearestRegionsSearchTree
             {
                 Point &point = points[n];
 
-                const float query_pt[3] = {point.p.x, point.p.y, point.p.z};
-
                 size_t num_results = NUM_KNN_NEIGHBOURS;
                 unsigned int ret_index[NUM_KNN_NEIGHBOURS];
                 float ret_dist_sqr[NUM_KNN_NEIGHBOURS];
 #if defined(PGL_KNN_EMBREE)
-
+                KNNResult result(NUM_KNN_NEIGHBOURS, points);
+                result.k = 1;
+                knnQuery(point.p, tmax, &result);
+                num_results = result.knn.empty() ? 0 : result.knn.size();
 #else
+                const float query_pt[3] = {point.p.x, point.p.y, point.p.z};
                 num_results = index->knnSearch(&query_pt[0], num_results, &ret_index[0], &ret_dist_sqr[0]);
 #endif
                 bool selfIsIn = false;
@@ -474,7 +504,12 @@ struct KNearestRegionsSearchTree
                 int i = 0;
                 for (; i < num_results; i++)
                 {
+#if defined(PGL_KNN_EMBREE)
+                    size_t idx = result.knn.top().primID;
+                    result.knn.pop();
+#else
                     size_t idx = ret_index[i];
+#endif
                     selfIsIn = selfIsIn || idx == n;
                     nh.set(i, idx, points[idx].p.x, points[idx].p.y, points[idx].p.z);
                 }
@@ -500,14 +535,23 @@ struct KNearestRegionsSearchTree
     {
         OPENPGL_ASSERT(_isBuild);
 
+#if defined(PGL_KNN_EMBREE)
+        const embree::Vec3f query_pt = {p.x, p.y, p.z};
+        unsigned int ret_index[NUM_KNN];
+        KNNResult result(NUM_KNN, points);
+        result.k = 1;
+        knnQuery(query_pt, tmax, &result);
+        size_t num_results = result.knn.empty() ? 0 : result.knn.size();
+        for (int i = 0; i < num_results; i++)
+        {
+            ret_index[i] = result.knn.top().primID;
+            result.knn.pop();
+        }
+#else
         const float query_pt[3] = {p.x, p.y, p.z};
-
         size_t num_results = NUM_KNN;
         unsigned int ret_index[NUM_KNN];
         float ret_dist_sqr[NUM_KNN];
-#if defined(PGL_KNN_EMBREE)
-
-#else
         num_results = index->knnSearch(&query_pt[0], num_results, &ret_index[0], &ret_dist_sqr[0]);
 #endif
         if (num_results == 0)
@@ -517,7 +561,6 @@ struct KNearestRegionsSearchTree
 #endif
             return -1;
         }
-
         return ret_index[draw(sample, num_results)];
     }
 
@@ -643,7 +686,9 @@ struct KNearestRegionsSearchTree
     uint32_t num_points{0};
 
 #if defined(PGL_KNN_EMBREE)
+    RTCDevice device;
     RTCScene scene;
+    float tmax{1e10f};
 #else
     std::unique_ptr<Index> index;
 #endif
