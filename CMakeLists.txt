@@ -58,7 +58,7 @@ OPTION(OPENPGL_EF_IMAGE_SPACE_GUIDING_BUFFER "Enables experimental feature Image
 OPTION(OPENPGL_DIRECTION_COMPRESSION "Using 32-Bit compression to represent directions." OFF)
 OPTION(OPENPGL_RADIANCE_COMPRESSION "Using RGBE 32-Bit compression to represent radiance data (linear RGB)." OFF)
 
-OPTION(OPENPGL_KNN_EMBREE "Using Embree for the KNN look ups." ON)
+OPTION(OPENPGL_KNN_EMBREE "Using Embree for the KNN look ups." OFF)
 OPTION(OPENPGL_KNN_PRECOMPUTED_NN "Using precompute nearest-neighbor lists for the KNN look ups." ON)
 
 if(COMPILER_SUPPORTS_ARM_NEON)
