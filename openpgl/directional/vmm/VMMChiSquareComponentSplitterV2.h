@@ -276,7 +276,7 @@ template <class TVMMFactory>
 bool VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::SplitAndUpdate(VMM &vmm, const float &mcEstimate, const SplitCandidate &candidate,
                                                                              ComponentSplitStatistics &splitStatistics, SufficientStatistics &suffStatistics,
                                                                              const SampleData *data, const size_t &numData, const typename VMMFactory::Configuration factoryCfg,
-                                                                             const bool &doPartialRefit) const
+                                                                             const bool &) const
 {
     OPENPGL_ASSERT(vmm.isValid());
     PartialFittingMask mask;
@@ -1378,7 +1378,7 @@ void VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::ComponentSplitStat
 
 template <class TVMMFactory>
 std::vector<typename VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::SplitCandidate>
-VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::ComponentSplitStatistics::getSplitCandidates(const float splitThreshold, const bool useConfidence) const
+VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::ComponentSplitStatistics::getSplitCandidates(const float splitThreshold, [[maybe_unused]] const bool useConfidence) const
 {
     std::vector<SplitCandidate> splitCandidates;
     // For each mixture component
@@ -1527,7 +1527,7 @@ size_t VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::ComponentSplitSt
 template <class TVMMFactory>
 bool VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::ComponentSplitStatistics::getHighestValidSplitComponent(SplitCandidate &splitCandiate,
                                                                                                                       const float splitChiSquareThreshold, const VMM &vmm,
-                                                                                                                      const bool *alreadySplitted, const bool useConfidence) const
+                                                                                                                      const bool *alreadySplitted, [[maybe_unused]] const bool useConfidence) const
 {
     bool success = false;
     splitCandiate.componentIndex = VMM::MaxComponents;

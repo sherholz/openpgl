@@ -274,7 +274,7 @@ namespace embree
     size_t rightReduction = 0;
     return serial_partitioning(
       array,begin,end,leftReduction,rightReduction,is_left,
-      [] (size_t& t,const T& ref) {  });
+      [] ([[maybe_unused]] size_t& t, [[maybe_unused]] const T& ref) {  });
   }
 
   template<typename T, typename IsLeft>
@@ -288,8 +288,8 @@ namespace embree
     size_t rightReduction = 0;
     return parallel_partitioning(
       array,begin,end,0,leftReduction,rightReduction,is_left,
-      [] (size_t& t,const T& ref) {  },
-      [] (size_t& t0,size_t& t1) { },
+      [] ([[maybe_unused]] size_t& t,[[maybe_unused]] const T& ref) {  },
+      [] ([[maybe_unused]] size_t& t0, [[maybe_unused]] size_t& t1) { },
       BLOCK_SIZE);
   }
 

@@ -1381,7 +1381,7 @@ void ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::reprojectSa
 
 template <class TVMMDistribution>
 void ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::prepareSamples(SampleData *samples, const size_t numSamples, const SampleStatistics &sampleStatistics,
-                                                                                    const Configuration &cfg) const
+                                                                                    const Configuration &) const
 {
     if (TVMMDistribution::ParallaxCompensation)
     {
