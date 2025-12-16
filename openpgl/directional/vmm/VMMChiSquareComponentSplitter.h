@@ -553,7 +553,7 @@ bool VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::SplitComponent(VMM &
     ComponentSplitinfo splitInfo;
     const div_t tmpK = div(idx, static_cast<int>(VMM::VectorSize));
 
-    float numAssignedSamples = splitStats.sumAssignedSamples[tmpK.quot][tmpK.rem];
+    //float numAssignedSamples = splitStats.sumAssignedSamples[tmpK.quot][tmpK.rem];
 
     float inv_sumWeights = embree::rcp(splitStats.sumWeights[tmpK.quot][tmpK.rem]);
     OPENPGL_ASSERT(embree::isvalid(inv_sumWeights));
