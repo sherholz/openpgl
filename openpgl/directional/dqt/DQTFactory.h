@@ -92,6 +92,7 @@ class DirectionalQuadtreeFactory
 
     struct Statistics
     {
+/*
         // TODO this is very ugly
         struct SufficientStatistics
         {
@@ -102,7 +103,9 @@ class DirectionalQuadtreeFactory
                 return true;
             }
         } sufficientStatistics;
-
+*/
+        void applyParallaxShift(const Distribution &, const Vector3) {}
+        
         float numSamples = 0;
         std::vector<StatsNode> nodes = {StatsNode()};
 

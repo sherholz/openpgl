@@ -87,6 +87,10 @@ struct AdaptiveSplitAndMergeFactoryV2
 
         bool isValid() const;
 
+        void applyParallaxShift(const Distribution &vmm, const Vector3 shift) {
+            sufficientStatistics.applyParallaxShift(vmm, shift);
+        }
+
         inline size_t getNumComponents() const
         {
             OPENPGL_ASSERT(sufficientStatistics.getNumComponents() == splittingStatistics.getNumComponents());
@@ -286,7 +290,7 @@ void AdaptiveSplitAndMergeFactoryV2<TVMMDistribution>::fit(VMM &vmm, Statistics 
     // Initial fitting of the mixture using standard weighted EM
     WeightedEMFactory factory = WeightedEMFactory();
     typename WeightedEMFactory::FittingStatistics wemFitStats;
-    factory.fitMixture(vmm, stats.sufficientStatistics, samples, numSamples, cfg.weightedEMCfg, wemFitStats);
+    factory.fit(vmm, stats.sufficientStatistics, samples, numSamples, cfg.weightedEMCfg, wemFitStats);
     factory.initComponentDistances(vmm, stats.sufficientStatistics, samples, numSamples);
     OPENPGL_ASSERT(vmm.isValid());
     OPENPGL_ASSERT(vmm.getNumComponents() == stats.sufficientStatistics.getNumComponents());
@@ -413,7 +417,7 @@ void AdaptiveSplitAndMergeFactoryV2<TVMMDistribution>::update(VMM &vmm, Statisti
     WeightedEMFactory factory = WeightedEMFactory();
     typename WeightedEMFactory::FittingStatistics wemFitStats;
     const size_t previousNumberOfComponents = vmm._numComponents;
-    factory.updateMixture(vmm, stats.sufficientStatistics, samples, numSamples, cfg.weightedEMCfg, wemFitStats);
+    factory.update(vmm, stats.sufficientStatistics, samples, numSamples, cfg.weightedEMCfg, wemFitStats);
     OPENPGL_ASSERT(vmm.isValid());
     fitStats.numSamples = numSamples;
     fitStats.numUpdateWEMIterations = wemFitStats.numIterations;

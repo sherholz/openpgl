@@ -8,6 +8,7 @@
 
 #include "../../data/SampleData.h"
 #include "../../openpgl_common.h"
+#include "../../include/openpgl/types.h"
 #include "ParallaxAwareVonMisesFisherMixture.h"
 
 // #define OPENPGL_MAX_KAPPA 1000000.0f
@@ -25,6 +26,8 @@ template <class TVMMDistribution>
 struct ParallaxAwareVonMisesFisherWeightedEMFactory
 {
    public:
+    const static PGL_DIRECTIONAL_DISTRIBUTION_TYPE DIRECTIONAL_DISTRIBUTION_TYPE =
+        TVMMDistribution::ParallaxCompensation ? PGL_DIRECTIONAL_DISTRIBUTION_PARALLAX_AWARE_VMM : PGL_DIRECTIONAL_DISTRIBUTION_VMM;
     typedef TVMMDistribution Distribution;
     using VMM = TVMMDistribution;
 
@@ -190,6 +193,8 @@ struct ParallaxAwareVonMisesFisherWeightedEMFactory
         bool operator==(const SufficientStatistics &b) const;
     };
 
+    using Statistics = SufficientStatistics;
+
     struct UnassignedSamplesStatistics
     {
         float sumOfUnassignedWeights{0.0f};
@@ -205,9 +210,9 @@ struct ParallaxAwareVonMisesFisherWeightedEMFactory
 
     void prepareSamples(SampleData *samples, const size_t numSamples, const SampleStatistics &sampleStatistics, const Configuration &cfg) const;
 
-    void fitMixture(VMM &vmm, SufficientStatistics &stats, const SampleData *samples, const size_t numSamples, const Configuration &cfg, FittingStatistics &fitStats) const;
+    void fit(VMM &vmm, SufficientStatistics &stats, const SampleData *samples, const size_t numSamples, const Configuration &cfg, FittingStatistics &fitStats) const;
 
-    void updateMixture(VMM &vmm, SufficientStatistics &previousStats, const SampleData *samples, const size_t numSamples, const Configuration &cfg,
+    void update(VMM &vmm, SufficientStatistics &previousStats, const SampleData *samples, const size_t numSamples, const Configuration &cfg,
                        FittingStatistics &fitStats) const;
 
     void partialUpdateMixture(VMM &vmm, PartialFittingMask &mask, const bool usePreviousStatsAsPrior, PartialFittingMask &previousAsPriorMask, SufficientStatistics &previousStats,
@@ -871,14 +876,14 @@ typename ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::VMM Par
 }
 
 template <class TVMMDistribution>
-void ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::fitMixture(VMM &vmm, SufficientStatistics &stats, const SampleData *samples, const size_t numSamples,
+void ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::fit(VMM &vmm, SufficientStatistics &stats, const SampleData *samples, const size_t numSamples,
                                                                                 const Configuration &cfg, FittingStatistics &fitStats) const
 {
     const size_t numComponents = cfg.initK;
     this->InitUniformVMM(vmm, numComponents, cfg.initKappa);
     stats.clear(numComponents);
     stats.normalized = true;
-    updateMixture(vmm, stats, samples, numSamples, cfg, fitStats);
+    update(vmm, stats, samples, numSamples, cfg, fitStats);
 }
 
 template <class TVMMDistribution>
@@ -907,7 +912,7 @@ void ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::handleUnass
 }
 
 template <class TVMMDistribution>
-void ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::updateMixture(VMM &vmm, SufficientStatistics &previousStats, const SampleData *samples,
+void ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::update(VMM &vmm, SufficientStatistics &previousStats, const SampleData *samples,
                                                                                    const size_t numSamples, const Configuration &cfg, FittingStatistics &fitStats) const
 {
     SufficientStatistics currentStats;

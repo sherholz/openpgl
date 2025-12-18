@@ -549,11 +549,11 @@ struct Field
                         // TODO: we should move applying the paralax comp to the Distribution to the factory
                         if (regionStorage.first.initialized && DirectionalDistribution::ParallaxCompensation == 1)
                         {
-                            regionStorage.first.trainingStatistics.sufficientStatistics.applyParallaxShift(regionStorage.first.distribution,
+                            regionStorage.first.trainingStatistics.applyParallaxShift(regionStorage.first.distribution,
                                                                                                            regionStorage.first.distribution._pivotPosition - sampleMean);
                             regionStorage.first.distribution.performRelativeParallaxShift(regionStorage.first.distribution._pivotPosition - sampleMean);
                             OPENPGL_ASSERT(regionStorage.first.distribution.isValid());
-                            OPENPGL_ASSERT(regionStorage.first.trainingStatistics.sufficientStatistics.isValid());
+                            OPENPGL_ASSERT(regionStorage.first.trainingStatistics.isValid());
                         }
                         typename DirectionalDistributionFactory::FittingStatistics fittingStats;
                         m_distributionFactory.prepareSamples(samples.data() + regionStorage.second.m_begin, regionStorage.second.m_end - regionStorage.second.m_begin,
