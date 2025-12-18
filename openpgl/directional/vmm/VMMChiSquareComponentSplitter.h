@@ -500,7 +500,7 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::UpdateSplitStatistic
                 chiSquareEst += vmfPDF;
                 chiSquareEst /= samplePDF;
 
-                chiSquareEst = select(softAssign.assignments[k] > 0.f, chiSquareEst, zeros);
+                chiSquareEst = select(softAssign.assignments[k] > FLT_EPSILON, chiSquareEst, zeros);
 
                 splitStats.sumAssignedSamples[k] += softAssign.assignments[k];
                 // incremental updated of the MC chiSquare estimate
@@ -553,7 +553,7 @@ bool VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::SplitComponent(VMM &
     ComponentSplitinfo splitInfo;
     const div_t tmpK = div(idx, static_cast<int>(VMM::VectorSize));
 
-    //float numAssignedSamples = splitStats.sumAssignedSamples[tmpK.quot][tmpK.rem];
+    // float numAssignedSamples = splitStats.sumAssignedSamples[tmpK.quot][tmpK.rem];
 
     float inv_sumWeights = embree::rcp(splitStats.sumWeights[tmpK.quot][tmpK.rem]);
     OPENPGL_ASSERT(embree::isvalid(inv_sumWeights));
@@ -1055,7 +1055,7 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::ComponentSplitStatis
     Vector2 meanDirection2DItoK = Map3DTo2D<Vector3, Vector2, float>(inv_transformK * meanDirectionI3D);
     Vector2 meanDirection2DJtoK = Map3DTo2D<Vector3, Vector2, float>(inv_transformK * meanDirectionJ3D);
 
-    const float inv_weightK = (weightK > 0.f) ? embree::rcp(weightK) : 1.f;
+    const float inv_weightK = (weightK > FLT_EPSILON) ? embree::rcp(weightK) : 1.f;
 
     const float sumWeightsI = sumWeights[tmpI.quot][tmpI.rem];
     const float sumWeightsJ = sumWeights[tmpJ.quot][tmpJ.rem];
@@ -1064,14 +1064,14 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::ComponentSplitStatis
     // std::cout << "\tsumWeightsI: " << sumWeightsI << "\tsumWeightsJ: " << sumWeightsJ << "\tsumWeightsK: " << sumWeightsK << std::endl;
     // std::cout << "\tnumSamplesI: " << numSamples[tmpI.quot][tmpI.rem] << "\tsumWeightsJ: " << numSamples[tmpJ.quot][tmpJ.rem] << std::endl;
 
-    const Vector3 covarianceI = (sumWeightsI > 0.f) ? Vector3(splitWeightedSampleCovariances[tmpI.quot].x[tmpI.rem], splitWeightedSampleCovariances[tmpI.quot].y[tmpI.rem],
-                                                              splitWeightedSampleCovariances[tmpI.quot].z[tmpI.rem]) *
-                                                          embree::rcp(sumWeightsI)
-                                                    : Vector3(0.f);
-    const Vector3 covarianceJ = (sumWeightsJ > 0.f) ? Vector3(splitWeightedSampleCovariances[tmpJ.quot].x[tmpJ.rem], splitWeightedSampleCovariances[tmpJ.quot].y[tmpJ.rem],
-                                                              splitWeightedSampleCovariances[tmpJ.quot].z[tmpJ.rem]) *
-                                                          embree::rcp(sumWeightsJ)
-                                                    : Vector3(0.f);
+    const Vector3 covarianceI = (sumWeightsI > FLT_EPSILON) ? Vector3(splitWeightedSampleCovariances[tmpI.quot].x[tmpI.rem], splitWeightedSampleCovariances[tmpI.quot].y[tmpI.rem],
+                                                                      splitWeightedSampleCovariances[tmpI.quot].z[tmpI.rem]) *
+                                                                  embree::rcp(sumWeightsI)
+                                                            : Vector3(0.f);
+    const Vector3 covarianceJ = (sumWeightsJ > FLT_EPSILON) ? Vector3(splitWeightedSampleCovariances[tmpJ.quot].x[tmpJ.rem], splitWeightedSampleCovariances[tmpJ.quot].y[tmpJ.rem],
+                                                                      splitWeightedSampleCovariances[tmpJ.quot].z[tmpJ.rem]) *
+                                                                  embree::rcp(sumWeightsJ)
+                                                            : Vector3(0.f);
 
 #ifdef OPENPGL_ZERO_MEAN
     const Vector2 meanDirectionK2D(0.f);
