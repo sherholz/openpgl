@@ -137,6 +137,10 @@ struct AdaptiveSplitAndMergeFactory
     void updateVolumeScatterProbability(VMM &vmm, Statistics &stats, const SampleData *samples, const size_t numSamples, const ZeroValueSampleData *zeroValueSamples,
                                         const size_t numZeroValueSamples, const bool varianceBased) const;
 
+    void initComponentDistances(VMM &, Statistics &, const SampleData *, const size_t) const {};
+
+    void updateComponentDistances(VMM &, Statistics &, const SampleData *, const size_t) const {};
+
     std::string toString() const
     {
         std::ostringstream oss;

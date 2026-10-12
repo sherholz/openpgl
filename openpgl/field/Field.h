@@ -466,6 +466,10 @@ struct Field
                                                              regionStorage.first.sampleStatistics, m_distributionFactorySettings);
                         m_distributionFactory.fit(regionStorage.first.distribution, regionStorage.first.trainingStatistics, samples.data() + regionStorage.second.m_begin,
                                                   regionStorage.second.m_end - regionStorage.second.m_begin, m_distributionFactorySettings, fittingStats);
+#ifdef NO_SPLIT_AND_MERGE_FACTORY
+                        m_distributionFactory.initComponentDistances(regionStorage.first.distribution, regionStorage.first.trainingStatistics,
+                                                                     samples.data() + regionStorage.second.m_begin, regionStorage.second.m_end - regionStorage.second.m_begin);
+#endif
 #ifdef OPENPGL_RADIANCE_CACHES
                         m_distributionFactory.updateFluenceEstimate(regionStorage.first.distribution, samples.data() + regionStorage.second.m_begin,
                                                                     regionStorage.second.m_end - regionStorage.second.m_begin, regionStorage.first.numZeroValueSamples,
@@ -562,11 +566,20 @@ struct Field
                         {
                             m_distributionFactory.update(regionStorage.first.distribution, regionStorage.first.trainingStatistics, samples.data() + regionStorage.second.m_begin,
                                                          regionStorage.second.m_end - regionStorage.second.m_begin, m_distributionFactorySettings, fittingStats);
+#ifdef NO_SPLIT_AND_MERGE_FACTORY
+                            m_distributionFactory.updateComponentDistances(regionStorage.first.distribution, regionStorage.first.trainingStatistics,
+                                                                           samples.data() + regionStorage.second.m_begin,
+                                                                           regionStorage.second.m_end - regionStorage.second.m_begin);
+#endif
                         }
                         else
                         {
                             m_distributionFactory.fit(regionStorage.first.distribution, regionStorage.first.trainingStatistics, samples.data() + regionStorage.second.m_begin,
                                                       regionStorage.second.m_end - regionStorage.second.m_begin, m_distributionFactorySettings, fittingStats);
+#ifdef NO_SPLIT_AND_MERGE_FACTORY
+                            m_distributionFactory.initComponentDistances(regionStorage.first.distribution, regionStorage.first.trainingStatistics,
+                                                                         samples.data() + regionStorage.second.m_begin, regionStorage.second.m_end - regionStorage.second.m_begin);
+#endif
                             regionStorage.first.initialized = true;
                         }
 #ifdef OPENPGL_RADIANCE_CACHES

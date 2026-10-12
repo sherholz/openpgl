@@ -185,6 +185,10 @@ class DirectionalQuadtreeFactory
 
     void prepareSamples(SampleData *, const size_t, const SampleStatistics &, const Configuration &) const {}
 
+    void initComponentDistances(Distribution &, Statistics &, const SampleData *, const size_t) const {};
+
+    void updateComponentDistances(Distribution &, Statistics &, const SampleData *, const size_t) const {};
+
     void updateFluenceEstimate(Distribution &dist, const SampleData *samples, const size_t numSamples, const size_t numZeroValueSamples,
                                const SampleStatistics &sampleStatistics) const
     {}

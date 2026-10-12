@@ -20,8 +20,6 @@
 
 #define OPENPGL_TASK_CONTROL
 
-#define NO_SPLIT_AND_MERGE_FACTORY
-
 namespace openpgl
 {
 
