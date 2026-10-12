@@ -63,6 +63,20 @@ struct FieldConfig
     void SetVarianceBasedVSP(const bool varianceBasedVSP);
 #endif
     /**
+     * @brief Enables a heuristic that scales the sample distance so that it is assumed to be outside the spatial cache region (i.e., 3^2*sigma_position)
+     *
+     * @param useMinimalDistanceHeuristic if the minimal distance should be scaled to be outside the cache region
+     */
+    void SetDebugUseMinimalDistanceHeuristic(const bool useMinimalDistanceHeuristic);
+
+    /**
+     * @brief Enables a heuristic that scales the sample distance so that it is assumed to be outside the spatial cache region (i.e., 3^2*sigma_position)
+     *
+     * @param useMinimalDistanceHeuristic if the minimal distance should be scaled to be outside the cache region
+     */
+    void SetDebugUseMinimalDistanceHeuristic(const bool useMinimalDistanceHeuristic);
+
+    /**
      * @brief For debugging and benchmarking the update of the spatial structure this function can disable
      * the training of the directional distribution during the update iterations.
      *
@@ -112,6 +126,16 @@ OPENPGL_INLINE void FieldConfig::SetVarianceBasedVSP(const bool varianceBasedVSP
     m_args.varianceBasedVSP = varianceBasedVSP;
 }
 #endif
+
+OPENPGL_INLINE void FieldConfig::SetDebugUseMinimalDistanceHeuristic(const bool useMinimalDistanceHeuristic)
+{
+    m_args.debugArguments.useMinimalDistanceHeuristic = useMinimalDistanceHeuristic;
+}
+
+OPENPGL_INLINE void FieldConfig::SetDebugUseMinimalDistanceHeuristic(const bool useMinimalDistanceHeuristic)
+{
+    m_args.debugArguments.useMinimalDistanceHeuristic = useMinimalDistanceHeuristic;
+}
 
 }  // namespace cpp
 }  // namespace openpgl

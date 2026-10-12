@@ -130,6 +130,7 @@ struct Device : public IDevice
             gFieldSettings.distributionFactorySettings.weightPrior = directionalDistributionArguments->weightPrior;
             gFieldSettings.distributionFactorySettings.meanCosinePriorStrength = directionalDistributionArguments->meanCosinePriorStrength;
             gFieldSettings.distributionFactorySettings.meanCosinePrior = directionalDistributionArguments->meanCosinePrior;
+            gFieldSettings.distributionFactorySettings.useMinimalDistanceHeuristic = args.debugArguments.useMinimalDistanceHeuristic;
 #else
             gFieldSettings.distributionFactorySettings.weightedEMCfg.initK = directionalDistributionArguments->initK;
             gFieldSettings.distributionFactorySettings.weightedEMCfg.initKappa = directionalDistributionArguments->initKappa;
@@ -143,6 +144,7 @@ struct Device : public IDevice
             gFieldSettings.distributionFactorySettings.weightedEMCfg.weightPrior = directionalDistributionArguments->weightPrior;
             gFieldSettings.distributionFactorySettings.weightedEMCfg.meanCosinePriorStrength = directionalDistributionArguments->meanCosinePriorStrength;
             gFieldSettings.distributionFactorySettings.weightedEMCfg.meanCosinePrior = directionalDistributionArguments->meanCosinePrior;
+            gFieldSettings.distributionFactorySettings.weightedEMCfg.useMinimalDistanceHeuristic = args.debugArguments.useMinimalDistanceHeuristic;
 
             gFieldSettings.distributionFactorySettings.splittingThreshold = directionalDistributionArguments->splittingThreshold;
             gFieldSettings.distributionFactorySettings.mergingThreshold = directionalDistributionArguments->mergingThreshold;
@@ -154,6 +156,7 @@ struct Device : public IDevice
             gFieldSettings.distributionFactorySettings.minSamplesForSplitting = directionalDistributionArguments->minSamplesForSplitting;
             gFieldSettings.distributionFactorySettings.minSamplesForPartialRefitting = directionalDistributionArguments->minSamplesForPartialRefitting;
             gFieldSettings.distributionFactorySettings.minSamplesForMerging = directionalDistributionArguments->minSamplesForMerging;
+
 #endif
             delete directionalDistributionArguments;
 
@@ -198,6 +201,7 @@ struct Device : public IDevice
             gFieldSettings.distributionFactorySettings.weightPrior = directionalDistributionArguments->weightPrior;
             gFieldSettings.distributionFactorySettings.meanCosinePriorStrength = directionalDistributionArguments->meanCosinePriorStrength;
             gFieldSettings.distributionFactorySettings.meanCosinePrior = directionalDistributionArguments->meanCosinePrior;
+            gFieldSettings.distributionFactorySettings.useMinimalDistanceHeuristic = args.debugArguments.useMinimalDistanceHeuristic;
 #else
             gFieldSettings.distributionFactorySettings.weightedEMCfg.initK = directionalDistributionArguments->initK;
             gFieldSettings.distributionFactorySettings.weightedEMCfg.initKappa = directionalDistributionArguments->initKappa;
@@ -211,6 +215,7 @@ struct Device : public IDevice
             gFieldSettings.distributionFactorySettings.weightedEMCfg.weightPrior = directionalDistributionArguments->weightPrior;
             gFieldSettings.distributionFactorySettings.weightedEMCfg.meanCosinePriorStrength = directionalDistributionArguments->meanCosinePriorStrength;
             gFieldSettings.distributionFactorySettings.weightedEMCfg.meanCosinePrior = directionalDistributionArguments->meanCosinePrior;
+            gFieldSettings.distributionFactorySettings.weightedEMCfg.useMinimalDistanceHeuristic = args.debugArguments.useMinimalDistanceHeuristic;
 
             gFieldSettings.distributionFactorySettings.splittingThreshold = directionalDistributionArguments->splittingThreshold;
             gFieldSettings.distributionFactorySettings.mergingThreshold = directionalDistributionArguments->mergingThreshold;

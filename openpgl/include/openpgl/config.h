@@ -114,6 +114,7 @@ extern "C"
     struct PGLDebugArguments
     {
         bool fitRegions{true};
+        bool useMinimalDistanceHeuristic{true};
     };
 
     struct PGLFieldArguments
@@ -123,7 +124,7 @@ extern "C"
         PGL_DIRECTIONAL_DISTRIBUTION_TYPE directionalDistributionType;
         void *directionalDistributionArguments;
         // for debugging
-        bool deterministic{false};
+        bool deterministic{true};
 #ifdef OPENPGL_VSP_GUIDING
         bool varianceBasedVSP{false};
 #endif
