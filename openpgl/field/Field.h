@@ -526,7 +526,7 @@ struct Field
 #endif
             {
                 RegionStorageType &regionStorage = m_regionStorageContainer[n];
-                if (regionStorage.first.numSplits)
+                if (regionStorage.first.numSplits > 0)
                 {
                     const float splitDecay = powf(this->m_decayOnSpatialSplit, (float)regionStorage.first.numSplits);
                     regionStorage.first.distribution.decay(splitDecay);
