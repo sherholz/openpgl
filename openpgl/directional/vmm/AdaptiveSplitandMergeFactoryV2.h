@@ -87,7 +87,8 @@ struct AdaptiveSplitAndMergeFactoryV2
 
         bool isValid() const;
 
-        void applyParallaxShift(const Distribution &vmm, const Vector3 shift) {
+        void applyParallaxShift(const Distribution &vmm, const Vector3 shift)
+        {
             sufficientStatistics.applyParallaxShift(vmm, shift);
         }
 
@@ -441,10 +442,10 @@ void AdaptiveSplitAndMergeFactoryV2<TVMMDistribution>::update(VMM &vmm, Statisti
         //////////////////////////////////////////////////////
         Splitter splitter = Splitter();
 
-        //auto splitStatsBefore = stats.splittingStatistics;
-        // Updating split statistics
+        // auto splitStatsBefore = stats.splittingStatistics;
+        //  Updating split statistics
         splitter.UpdateSplitStatistics(vmm, stats.splittingStatistics, mcEstimate, samples, numSamples, true, false);
-        //auto splitStatsAfter = stats.splittingStatistics;
+        // auto splitStatsAfter = stats.splittingStatistics;
 
         OPENPGL_ASSERT(stats.splittingStatistics.isValid());
         // Array of flags if a mixture component was already split or not. During the update procedure we only split a component once.

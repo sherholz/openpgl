@@ -550,7 +550,7 @@ struct Field
                         if (regionStorage.first.initialized && DirectionalDistribution::ParallaxCompensation == 1)
                         {
                             regionStorage.first.trainingStatistics.applyParallaxShift(regionStorage.first.distribution,
-                                                                                                           regionStorage.first.distribution._pivotPosition - sampleMean);
+                                                                                      regionStorage.first.distribution._pivotPosition - sampleMean);
                             regionStorage.first.distribution.performRelativeParallaxShift(regionStorage.first.distribution._pivotPosition - sampleMean);
                             OPENPGL_ASSERT(regionStorage.first.distribution.isValid());
                             OPENPGL_ASSERT(regionStorage.first.trainingStatistics.isValid());

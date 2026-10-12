@@ -92,20 +92,20 @@ class DirectionalQuadtreeFactory
 
     struct Statistics
     {
-/*
-        // TODO this is very ugly
-        struct SufficientStatistics
-        {
-            void applyParallaxShift(const Distribution &, const Vector3) {}
+        /*
+                // TODO this is very ugly
+                struct SufficientStatistics
+                {
+                    void applyParallaxShift(const Distribution &, const Vector3) {}
 
-            bool isValid() const
-            {
-                return true;
-            }
-        } sufficientStatistics;
-*/
+                    bool isValid() const
+                    {
+                        return true;
+                    }
+                } sufficientStatistics;
+        */
         void applyParallaxShift(const Distribution &, const Vector3) {}
-        
+
         float numSamples = 0;
         std::vector<StatsNode> nodes = {StatsNode()};
 
@@ -183,7 +183,7 @@ class DirectionalQuadtreeFactory
         uint32_t numMerges = 0;
     };
 
-    void prepareSamples(SampleData *, const size_t , const SampleStatistics &, const Configuration &) const {}
+    void prepareSamples(SampleData *, const size_t, const SampleStatistics &, const Configuration &) const {}
 
     void updateFluenceEstimate(Distribution &dist, const SampleData *samples, const size_t numSamples, const size_t numZeroValueSamples,
                                const SampleStatistics &sampleStatistics) const

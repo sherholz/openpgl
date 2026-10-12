@@ -300,14 +300,14 @@ bool VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::SplitAndUpdate(VMM
         if (candidate.splitType == EFirefly)
         {
             splitSuccess = SplitComponentFireFly(vmm, splitStatistics, suffStatistics, idx, factoryCfg);
-             // For a firefly split we use both previous component stats as prior
+            // For a firefly split we use both previous component stats as prior
             previousAsPriorMask.setToTrue(idx);
             previousAsPriorMask.setToFalse(vmm._numComponents - 1);
         }
         else
         {
             splitSuccess = SplitComponentMultiModal(vmm, splitStatistics, suffStatistics, idx);
-            // For a multi modal split we use both previous component stats as prior 
+            // For a multi modal split we use both previous component stats as prior
             previousAsPriorMask.setToTrue(idx);
             previousAsPriorMask.setToTrue(vmm._numComponents - 1);
         }
@@ -750,7 +750,7 @@ bool VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::SplitComponentMult
     const div_t tmpK = div(idx, static_cast<int>(VMM::VectorSize));
 
     // The number of samples that got assinged to the split component after the last split/reset
-    //float numAssignedSamples = splitStats.sumAssignedSamples[tmpK.quot][tmpK.rem];
+    // float numAssignedSamples = splitStats.sumAssignedSamples[tmpK.quot][tmpK.rem];
 
     float inv_sumWeights = embree::rcp(splitStats.sumWeights[tmpK.quot][tmpK.rem]);
     OPENPGL_ASSERT(embree::isvalid(inv_sumWeights));
@@ -834,9 +834,10 @@ bool VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::SplitComponentMult
         {
             //  STEP ONE FIX
 #ifdef OPENPGL_DEBUG_SAM
-            std::cout << "Unsuccessfull split: " << "\t meanCosine = " << meanCosine << "\t D = " << D << "\t eigenValue0 = " << splitInfo.eigenValue0 << "\t eigenValue1 = " << splitInfo.eigenValue1 << std::endl;
+            std::cout << "Unsuccessfull split: " << "\t meanCosine = " << meanCosine << "\t D = " << D << "\t eigenValue0 = " << splitInfo.eigenValue0
+                      << "\t eigenValue1 = " << splitInfo.eigenValue1 << std::endl;
 #endif
-            
+
             // TODO: add reset of the component
             splitStats.reset(tmpK);
             return false;
@@ -857,7 +858,7 @@ bool VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::SplitComponentMult
         std::cout << "weight: " << weight << "\t meanCosine: " << meanCosine << std::endl;
 #endif
         // TODO: remove this check
-        //if (numAssignedSamples < 2.0f)
+        // if (numAssignedSamples < 2.0f)
         {
             splitStats.reset(tmpK);
             return false;
@@ -1527,7 +1528,8 @@ size_t VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::ComponentSplitSt
 template <class TVMMFactory>
 bool VonMisesFisherChiSquareComponentSplitterV2<TVMMFactory>::ComponentSplitStatistics::getHighestValidSplitComponent(SplitCandidate &splitCandiate,
                                                                                                                       const float splitChiSquareThreshold, const VMM &vmm,
-                                                                                                                      const bool *alreadySplitted, [[maybe_unused]] const bool useConfidence) const
+                                                                                                                      const bool *alreadySplitted,
+                                                                                                                      [[maybe_unused]] const bool useConfidence) const
 {
     bool success = false;
     splitCandiate.componentIndex = VMM::MaxComponents;

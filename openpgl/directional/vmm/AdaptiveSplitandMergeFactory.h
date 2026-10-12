@@ -92,7 +92,8 @@ struct AdaptiveSplitAndMergeFactory
 
         bool isValid() const;
 
-        void applyParallaxShift(const Distribution &vmm, const Vector3 shift) {
+        void applyParallaxShift(const Distribution &vmm, const Vector3 shift)
+        {
             sufficientStatistics.applyParallaxShift(vmm, shift);
         }
 

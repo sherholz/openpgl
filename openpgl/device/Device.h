@@ -35,7 +35,7 @@ static tbb::task_scheduler_init g_opgl_tbb_threads(tbb::task_scheduler_init::def
 
 struct IDevice
 {
-    virtual ~IDevice(){};
+    virtual ~IDevice() {};
     virtual ISurfaceVolumeField *newField(PGLFieldArguments args) const = 0;
     virtual ISurfaceVolumeField *newFieldFromFile(const std::string fieldFileName) const = 0;
 };
@@ -127,8 +127,7 @@ struct Device : public IDevice
             gFieldSettings.distributionFactorySettings.maxEMIterrations = directionalDistributionArguments->maxEMIterrations;
 
             gFieldSettings.distributionFactorySettings.maxKappa = directionalDistributionArguments->maxKappa;
-            gFieldSettings.distributionFactorySettings.maxMeanCosine =
-                openpgl::KappaToMeanCosine<float>(gFieldSettings.distributionFactorySettings.maxKappa);
+            gFieldSettings.distributionFactorySettings.maxMeanCosine = openpgl::KappaToMeanCosine<float>(gFieldSettings.distributionFactorySettings.maxKappa);
             gFieldSettings.distributionFactorySettings.convergenceThreshold = directionalDistributionArguments->convergenceThreshold;
             gFieldSettings.distributionFactorySettings.weightPrior = directionalDistributionArguments->weightPrior;
             gFieldSettings.distributionFactorySettings.meanCosinePriorStrength = directionalDistributionArguments->meanCosinePriorStrength;
@@ -168,7 +167,8 @@ struct Device : public IDevice
 #if defined(NO_SPLIT_AND_MERGE_FACTORY)
             using DirectionalDistributionFactory = ParallaxAwareVonMisesFisherWeightedEMFactory<ParallaxAwareVonMisesFisherMixture<VecSize, 32, true>>;
 #else
-            using DirectionalDistributionFactory = AdaptiveSplitAndMergeFactoryV2<ParallaxAwareVonMisesFisherMixture<VecSize, 32, true>, ParallaxAwareVonMisesFisherWeightedEMFactory>;
+            using DirectionalDistributionFactory =
+                AdaptiveSplitAndMergeFactoryV2<ParallaxAwareVonMisesFisherMixture<VecSize, 32, true>, ParallaxAwareVonMisesFisherWeightedEMFactory>;
 #endif
             using GuidingField = SurfaceVolumeField<VecSize, DirectionalDistributionFactory, KDTreePartitionBuilder,
                                                     VMMSurfaceSamplingDistribution<typename DirectionalDistributionFactory::Distribution, true>,
@@ -195,8 +195,7 @@ struct Device : public IDevice
             gFieldSettings.distributionFactorySettings.maxEMIterrations = directionalDistributionArguments->maxEMIterrations;
 
             gFieldSettings.distributionFactorySettings.maxKappa = directionalDistributionArguments->maxKappa;
-            gFieldSettings.distributionFactorySettings.maxMeanCosine =
-                openpgl::KappaToMeanCosine<float>(gFieldSettings.distributionFactorySettings.maxKappa);
+            gFieldSettings.distributionFactorySettings.maxMeanCosine = openpgl::KappaToMeanCosine<float>(gFieldSettings.distributionFactorySettings.maxKappa);
             gFieldSettings.distributionFactorySettings.convergenceThreshold = directionalDistributionArguments->convergenceThreshold;
             gFieldSettings.distributionFactorySettings.weightPrior = directionalDistributionArguments->weightPrior;
             gFieldSettings.distributionFactorySettings.meanCosinePriorStrength = directionalDistributionArguments->meanCosinePriorStrength;
@@ -260,8 +259,7 @@ struct Device : public IDevice
             gFieldSettings.distributionFactorySettings.maxEMIterrations = directionalDistributionArguments->maxEMIterrations;
 
             gFieldSettings.distributionFactorySettings.maxKappa = directionalDistributionArguments->maxKappa;
-            gFieldSettings.distributionFactorySettings.maxMeanCosine =
-                openpgl::KappaToMeanCosine<float>(gFieldSettings.distributionFactorySettings.maxKappa);
+            gFieldSettings.distributionFactorySettings.maxMeanCosine = openpgl::KappaToMeanCosine<float>(gFieldSettings.distributionFactorySettings.maxKappa);
             gFieldSettings.distributionFactorySettings.convergenceThreshold = directionalDistributionArguments->convergenceThreshold;
             gFieldSettings.distributionFactorySettings.weightPrior = directionalDistributionArguments->weightPrior;
             gFieldSettings.distributionFactorySettings.meanCosinePriorStrength = directionalDistributionArguments->meanCosinePriorStrength;
@@ -376,7 +374,8 @@ struct Device : public IDevice
 #if defined(NO_SPLIT_AND_MERGE_FACTORY)
             using DirectionalDistributionFactory = ParallaxAwareVonMisesFisherWeightedEMFactory<ParallaxAwareVonMisesFisherMixture<VecSize, 32, true>>;
 #else
-            using DirectionalDistributionFactory = AdaptiveSplitAndMergeFactoryV2<ParallaxAwareVonMisesFisherMixture<VecSize, 32, true>, ParallaxAwareVonMisesFisherWeightedEMFactory>;
+            using DirectionalDistributionFactory =
+                AdaptiveSplitAndMergeFactoryV2<ParallaxAwareVonMisesFisherMixture<VecSize, 32, true>, ParallaxAwareVonMisesFisherWeightedEMFactory>;
 #endif
             using GuidingField = SurfaceVolumeField<VecSize, DirectionalDistributionFactory, KDTreePartitionBuilder,
                                                     VMMSurfaceSamplingDistribution<typename DirectionalDistributionFactory::Distribution, true>,
