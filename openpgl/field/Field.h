@@ -490,6 +490,7 @@ struct Field
                         regionStorage.first.splitFlag = false;
                         regionStorage.first.initialized = true;
                     }
+                    regionStorage.first.initialized = true;
                 }
                 else
                 {
