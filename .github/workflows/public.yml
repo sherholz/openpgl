@@ -96,9 +96,9 @@ jobs:
     steps:
       - name: Install packages (ubuntu 26.04 arm)
         run: |
-          apt-get update
-          apt-get -y install g++ clang git-lfs python3
-          apt-get -y install cmake
+          #apt-get update
+          #apt-get -y install g++ clang git-lfs python3
+          #apt-get -y install cmake
           cmake --version
       - name: Checkout Repository
         uses: actions/checkout@v4
@@ -107,7 +107,7 @@ jobs:
 
       - name: Build and Run
         run: |
-          scripts/build_small.sh
+          scripts/build_arm_small.sh
 
   windows:
     runs-on: windows-latest
@@ -149,7 +149,7 @@ jobs:
       - name: Build and Run
         shell: bash
         run: |
-          scripts/build_small.sh
+          scripts/build_arm_small.sh
 
   macos:
     runs-on: macos-latest
