@@ -8,6 +8,7 @@ cd build
 cmake --version
 
 cmake \
+  -G Ninja \
   -DCMAKE_INSTALL_LIBDIR=lib \
   -DBUILD_OIDN=OFF \
   -DDOWNLOAD_ISPC=OFF \
