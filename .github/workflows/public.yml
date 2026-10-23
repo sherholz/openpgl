@@ -149,6 +149,8 @@ jobs:
       - name: Build and Run
         shell: bash
         run: |
+          export CXX=clang-cl.exe
+          export CC=clang-cl.exe
           scripts/build_arm_small.sh
 
   macos:
