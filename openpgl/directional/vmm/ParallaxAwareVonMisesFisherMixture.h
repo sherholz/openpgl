@@ -245,8 +245,8 @@ std::string ParallaxAwareVonMisesFisherMixture<VecSize, maxComponents, UseParall
     ss << "---------------------- " << std::endl;
     ss << "numComponents: " << this->_numComponents << std::endl;
     float sumWeights = 0.0f;
-    // for ( int k = 0; k < this->_numComponents; k++)
-    for (int k = 0; k < maxComponents; k++)
+    for (uint32_t k = 0; k < this->_numComponents; k++)
+    // for (uint32_t k = 0; k < maxComponents; k++)
     {
         const div_t tmp = div(k, static_cast<int>(VecSize));
         ss << "vmm[" << k << "]: " << "weight: " << this->_weights[tmp.quot][tmp.rem];
@@ -988,7 +988,7 @@ inline void ParallaxAwareVonMisesFisherMixture<VecSize, maxComponents, UseParall
     {
         cdfs[selectedVector] = vinclusive_prefix_sum(_weights[selectedVector]);
         cdf = cdfs[selectedVector][VectorSize - 1];
-        if (sumWeights + cdf >= searched || selectedVector >= tmp.quot)
+        if (sumWeights + cdf >= searched || selectedVector >= (uint32_t)tmp.quot)
         {
             break;
         }
@@ -1017,7 +1017,7 @@ inline void ParallaxAwareVonMisesFisherMixture<VecSize, maxComponents, UseParall
     float sumWeightsCheckPoint = sumWeights;
 #endif
 
-    const uint32_t maxSelectedComponent = selectedVector == tmp.quot ? tmp.rem + 1 : VectorSize;
+    const uint32_t maxSelectedComponent = selectedVector == (uint32_t)tmp.quot ? tmp.rem + 1 : VectorSize;
 
     cdfs[selectedVector] += sumWeights;
     selectedComponent = embree::select_min(cdfs[selectedVector] >= searched, cdfs[selectedVector]);
@@ -1139,7 +1139,7 @@ void ParallaxAwareVonMisesFisherMixture<VecSize, maxComponents, UseParallaxCompe
         return;
     }
 
-    const int cnt = (this->_numComponents + VectorSize - 1) / VectorSize;
+    const uint32_t cnt = (this->_numComponents + VectorSize - 1) / VectorSize;
     // const int rem = this->_numComponents % VectorSize;
 
     const embree::Vec3<embree::vfloat<VecSize>> shiftDirectionVec(shiftDirection);

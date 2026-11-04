@@ -352,7 +352,7 @@ struct Field
     {
         bool valid = true;
         size_t nGuidingRegions = m_regionStorageContainer.size();
-        for (int n = 0; n < nGuidingRegions; n++)
+        for (uint32_t n = 0; n < nGuidingRegions; n++)
         {
             valid = valid && m_regionStorageContainer[n].first.isValid() && m_regionStorageContainer[n].first.valid;
             valid = valid && m_regionStorageContainer[n].second.isValid();
@@ -688,7 +688,7 @@ struct Field
             return equal;
         }
 
-        for (int n = 0; n < treeNodesA.size(); n++)
+        for (uint32_t n = 0; n < treeNodesA.size(); n++)
         {
             if (!treeNodesA[n].operator==(treeNodesB[n]))
             {
@@ -696,7 +696,7 @@ struct Field
             }
         }
 
-        for (int n = 0; n < dataStorageIndicesA.size(); n++)
+        for (uint32_t n = 0; n < dataStorageIndicesA.size(); n++)
         {
             size_t idxA = dataStorageIndicesA[n];
             size_t idxB = dataStorageIndicesB[n];

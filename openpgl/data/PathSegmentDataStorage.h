@@ -41,11 +41,11 @@ struct PathSegmentDataStorage
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
     PathSegmentData *m_segmentStorage{nullptr};
     int m_seg_idx = {-1};
-    int m_max_seg_size = {0};
+    uint32_t m_max_seg_size = {0};
 
     SampleData *m_sampleStorage{nullptr};
     int m_sample_idx = {-1};
-    int m_max_sample_size = {0};
+    uint32_t m_max_sample_size = {0};
 
 #ifdef OPENPGL_RADIANCE_CACHES
     bool m_track_zero_value_samples{true};
@@ -63,7 +63,7 @@ struct PathSegmentDataStorage
     std::vector<ZeroValueSampleData> m_zeroValueSampleStorage;
 #endif
    public:
-    void reserve(const size_t &size)
+    void reserve(const uint32_t &size)
     {
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
         if (m_max_sample_size == size)
@@ -126,7 +126,7 @@ struct PathSegmentDataStorage
     PathSegmentData *next()
     {
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
-        if (m_seg_idx + 1 < m_max_seg_size)
+        if (uint32_t(m_seg_idx + 1) < m_max_seg_size)
         {
             m_seg_idx++;
             m_segmentStorage[m_seg_idx] = PathSegmentData();
@@ -146,7 +146,7 @@ struct PathSegmentDataStorage
     void addSegment(const PGLPathSegmentData &segment)
     {
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
-        if (m_seg_idx + 1 < m_max_seg_size)
+        if (uint32_t(m_seg_idx + 1) < m_max_seg_size)
         {
             m_seg_idx++;
             m_segmentStorage[m_seg_idx] = segment;
@@ -159,7 +159,7 @@ struct PathSegmentDataStorage
     void push_back(const PathSegmentData &psData)
     {
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
-        if (m_seg_idx + 1 < m_max_seg_size)
+        if (uint32_t(m_seg_idx + 1) < m_max_seg_size)
         {
             m_seg_idx++;
             m_segmentStorage[m_seg_idx] = psData;
@@ -196,14 +196,14 @@ struct PathSegmentDataStorage
         const openpgl::Vector3 maxThroughput{10.0f};
 
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
-        size_t numSegments = m_seg_idx + 1;
+        uint32_t numSegments = uint32_t(m_seg_idx + 1);
 #else
-        size_t numSegments = m_segmentStorage.size();
+        uint32_t numSegments = m_segmentStorage.size();
 #endif
         float lastDistance = 0.0f;
         // go revese from the start vertex of the last path segment (the end vertex of 2nd last segment)
         // towards the vertex of the first path segment
-        for (int i = numSegments - 2; i >= 0; --i)
+        for (uint32_t i = numSegments - 2; i >= 0; --i)
         {
             const openpgl::PathSegmentData &currentPathSegment = m_segmentStorage[i];
             float currentDistance = embree::length(openpgl::Point3(m_segmentStorage[i + 1].position.x, m_segmentStorage[i + 1].position.y, m_segmentStorage[i + 1].position.z) -
@@ -248,8 +248,8 @@ struct PathSegmentDataStorage
                     openpgl::Vector3(currentPathSegment.scatteringWeight.x, currentPathSegment.scatteringWeight.y, currentPathSegment.scatteringWeight.z);
                 openpgl::Vector3 scatteredContribution =
                     openpgl::Vector3(currentPathSegment.scatteredContribution.x, currentPathSegment.scatteredContribution.y, currentPathSegment.scatteredContribution.z);
-                openpgl::Vector3 directContribution =
-                    openpgl::Vector3(currentPathSegment.directContribution.x, currentPathSegment.directContribution.y, currentPathSegment.directContribution.z);
+                // openpgl::Vector3 directContribution =
+                //     openpgl::Vector3(currentPathSegment.directContribution.x, currentPathSegment.directContribution.y, currentPathSegment.directContribution.z);
 #endif
                 float pdf = std::max(minPDF, currentPathSegment.pdfDirectionIn);
                 uint32_t flags{0};
@@ -273,7 +273,7 @@ struct PathSegmentDataStorage
                 openpgl::Vector3 throughput{1.0f};
                 openpgl::Vector3 contribution{0.0f};
                 float previousRRSurvivalProb = 1.0f;
-                for (size_t j = i + 1; j < numSegments; ++j)
+                for (uint32_t j = i + 1; j < numSegments; ++j)
                 {
                     const openpgl::PathSegmentData &nextPathSegment = m_segmentStorage[j];
 
@@ -385,7 +385,7 @@ struct PathSegmentDataStorage
                         dsd.distance = distance;
                         dsd.flags = flags;
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
-                        if (m_sample_idx + 1 <= m_max_sample_size)
+                        if (uint32_t(m_sample_idx + 1) <= m_max_sample_size)
                         {
                             m_sample_idx++;
                             m_sampleStorage[m_sample_idx] = dsd;
@@ -543,7 +543,7 @@ struct PathSegmentDataStorage
         OPENPGL_ASSERT(sampleData.distance > 0);
         OPENPGL_ASSERT(embree::isvalid(sampleData.distance));
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
-        if (m_sample_idx + 1 <= m_max_sample_size)
+        if (uint32_t(m_sample_idx + 1) <= m_max_sample_size)
         {
             m_sample_idx++;
             m_sampleStorage[m_sample_idx] = sampleData;
@@ -579,7 +579,7 @@ struct PathSegmentDataStorage
 #endif
 
         bool valid = true;
-        for (int s = 0; s < numSegments; s++)
+        for (size_t s = 0; s < numSegments; s++)
         {
             PathSegmentData psd = m_segmentStorage[s];
             valid = valid && isValid(psd);
@@ -598,14 +598,14 @@ struct PathSegmentDataStorage
     std::string toString() const
     {
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
-        size_t numSegments = m_seg_idx + 1;
+        uint32_t numSegments = m_seg_idx + 1;
 #else
-        size_t numSegments = m_segmentStorage.size();
+        uint32_t numSegments = m_segmentStorage.size();
 #endif
         std::stringstream ss;
         ss << "PathSegmentDataStorage:" << std::endl;
         ss << "segment storage: size = " << numSegments << std::endl;
-        for (int s = 0; s < numSegments; s++)
+        for (uint32_t s = 0; s < numSegments; s++)
         {
             PathSegmentData psd = m_segmentStorage[s];
             ss << "seg[" << s << "]: " << openpgl::toString(psd);
@@ -613,12 +613,12 @@ struct PathSegmentDataStorage
             ss << std::endl;
         }
 #if defined(OPENPGL_PATHSEGMENT_STORAGE_USE_ARRAY)
-        int nSamples = m_sample_idx + 1;
+        uint32_t nSamples = m_sample_idx + 1;
 #else
-        int nSamples = m_sampleStorage.size();
+        uint32_t nSamples = m_sampleStorage.size();
 #endif
 
-        for (int s = 0; s < nSamples; s++)
+        for (uint32_t s = 0; s < nSamples; s++)
         {
             SampleData sample = m_sampleStorage[s];
             ss << "sample[" << s << "]: " << openpgl::toString(sample);

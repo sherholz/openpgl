@@ -152,7 +152,7 @@ struct ImageSpaceGuidingBuffer
             m_cfg.vspEstimate = false;
             m_cfg.vspType = PGLVSPTypes::EVSPContribution;
 #endif
-            for (int i = 0; i < layer_names.size(); i++)
+            for (uint32_t i = 0; i < layer_names.size(); i++)
             {
                 std::string layerName = layer_names[i];
                 if (layerName == "Contrib" || layerName == "Contrib2nd")
@@ -192,7 +192,7 @@ struct ImageSpaceGuidingBuffer
             }
 #endif
 
-            for (int i = 0; i < layer_names.size(); i++)
+            for (uint32_t i = 0; i < layer_names.size(); i++)
             {
                 std::string layerName = layer_names[i];
                 std::vector<tinyexr::LayerChannel> channels;
@@ -372,7 +372,7 @@ struct ImageSpaceGuidingBuffer
         int width = m_resolution.x;
         int height = m_resolution.y;
 
-        std::vector<int> numChannels;
+        std::vector<uint32_t> numChannels;
         std::vector<tinyexr::LayerChannel> layerChannels;
         std::vector<const float *> channelValues;
         int cIdx = 0;
@@ -515,9 +515,9 @@ struct ImageSpaceGuidingBuffer
         }
 #endif
 
-        int totalNumLayers = layerChannels.size();
-        int totalNumChannels = 0;
-        for (int i = 0; i < numChannels.size(); i++)
+        uint32_t totalNumLayers = layerChannels.size();
+        uint32_t totalNumChannels = 0;
+        for (uint32_t i = 0; i < numChannels.size(); i++)
         {
             totalNumChannels += numChannels[i];
         }
@@ -531,9 +531,9 @@ struct ImageSpaceGuidingBuffer
 
         // Convert image data from AoS to SoA (i.e. one image per channel in each layer)
         std::vector<std::vector<float>> channelImages;
-        for (int i = 0; i < totalNumLayers; i++)
+        for (uint32_t i = 0; i < totalNumLayers; i++)
         {
-            for (int j = 0; j < numChannels[i]; j++)
+            for (uint32_t j = 0; j < numChannels[i]; j++)
             {
                 channelImages.emplace_back(width * height);
             }
@@ -547,7 +547,7 @@ struct ImageSpaceGuidingBuffer
                 for (int pIdx = r.begin(); pIdx < r.end(); ++pIdx)
 #endif
                 {
-                    for (int c = 0; c < numChannels[i]; c++)
+                    for (uint32_t c = 0; c < numChannels[i]; c++)
                     {
                         channelImages[offset + c][pIdx] = channelValues[i][(pIdx)*numChannels[i] + c];
                     }
@@ -558,7 +558,7 @@ struct ImageSpaceGuidingBuffer
         // Set the channel names
         std::vector<EXRChannelInfo> channels(totalNumChannels);
         int offset = 0;
-        for (int lay = 0; lay < totalNumLayers; ++lay)
+        for (uint32_t lay = 0; lay < totalNumLayers; ++lay)
         {
             char namePrefix[256];
             std::size_t prefixLen = 0;
@@ -617,7 +617,7 @@ struct ImageSpaceGuidingBuffer
 
         // Sort channels by the ASCII byte code of their names because thats what OpenEXR expects
         std::vector<int> channelIndices;
-        for (int i = 0; i < totalNumChannels; ++i)
+        for (uint32_t i = 0; i < totalNumChannels; ++i)
             channelIndices.emplace_back(i);
         std::sort(channelIndices.begin(), channelIndices.end(), [&channels](int a, int b) {
             return strcmp(channels[a].name, channels[b].name) < 0;
@@ -625,7 +625,7 @@ struct ImageSpaceGuidingBuffer
 
         std::vector<EXRChannelInfo> sortedChannels(totalNumChannels);
         float **imagePtr = (float **)alloca(sizeof(float *) * exrImage.num_channels);
-        for (int i = 0; i < totalNumChannels; ++i)
+        for (uint32_t i = 0; i < totalNumChannels; ++i)
         {
             sortedChannels[i] = channels[channelIndices[i]];
             imagePtr[i] = channelImages[channelIndices[i]].data();
@@ -759,7 +759,8 @@ struct ImageSpaceGuidingBuffer
             m_contributionEstimateBuffers->spp[pixelIdx] += 1;
             float alpha = 1.f / m_contributionEstimateBuffers->spp[pixelIdx];
 
-            const pgl_vec3f quantity = m_cfg.contributionType == PGLContributionTypes::EContribContribution ? sample.contribution : sample.contribution * sample.contribution;
+            [[maybe_unused]] const pgl_vec3f quantity =
+                m_cfg.contributionType == PGLContributionTypes::EContribContribution ? sample.contribution : sample.contribution * sample.contribution;
             m_contributionEstimateBuffers->contribution[pixelIdx] = (1.f - alpha) * m_contributionEstimateBuffers->contribution[pixelIdx] + alpha * sample.contribution;
             m_contributionEstimateBuffers->albedo[pixelIdx] = (1.f - alpha) * m_contributionEstimateBuffers->albedo[pixelIdx] + alpha * sample.albedo;
             m_contributionEstimateBuffers->normal[pixelIdx] = (1.f - alpha) * m_contributionEstimateBuffers->normal[pixelIdx] + alpha * sample.normal;

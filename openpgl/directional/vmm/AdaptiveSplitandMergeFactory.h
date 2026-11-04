@@ -41,11 +41,11 @@ struct AdaptiveSplitAndMergeFactory
         bool useSplitAndMerge{true};
 
         bool partialReFit{false};
-        int maxSplitItr{1};
+        uint32_t maxSplitItr{1};
 
-        int minSamplesForSplitting{0};
-        int minSamplesForPartialRefitting{0};
-        int minSamplesForMerging{0};
+        uint32_t minSamplesForSplitting{0};
+        uint32_t minSamplesForPartialRefitting{0};
+        uint32_t minSamplesForMerging{0};
 
         void serialize(std::ostream &stream) const;
 

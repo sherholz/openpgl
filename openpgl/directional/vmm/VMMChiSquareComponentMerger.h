@@ -169,15 +169,15 @@ template <class TVMMFactory>
 bool VonMisesFisherChiSquareComponentMerger<TVMMFactory>::ThresholdedMergeNext(VMM &vmm, const float &mergeThreshold, float &mergeCost) const
 {
     // std::cout  << vmm.toString()<<std::endl;
-    int K = vmm._numComponents;
-    int mergeCandidateI = 0;
-    int mergeCandidateJ = 0;
+    uint32_t K = vmm._numComponents;
+    uint32_t mergeCandidateI = 0;
+    uint32_t mergeCandidateJ = 0;
     float minMergeCost = std::numeric_limits<float>::max();
 
     bool foundMergeCandidates = false;
-    for (size_t i = 0; i < K - 1; i++)
+    for (uint32_t i = 0; i < K - 1; i++)
     {
-        for (size_t j = i + 1; j < K; j++)
+        for (uint32_t j = i + 1; j < K; j++)
         {
             float mergeCost = CalculateMergeCost(vmm, i, j);
             if (mergeCost < mergeThreshold && mergeCost < minMergeCost)
@@ -206,16 +206,16 @@ bool VonMisesFisherChiSquareComponentMerger<TVMMFactory>::ThresholdedMergeNext(V
                                                                                ComponentSplitStatistics &splitStats) const
 {
     OPENPGL_ASSERT(splitStats.isValid());
-    int K = vmm._numComponents;
-    int mergeCandidateI = 0;
-    int mergeCandidateJ = 0;
+    uint32_t K = vmm._numComponents;
+    uint32_t mergeCandidateI = 0;
+    uint32_t mergeCandidateJ = 0;
     float minMergeCost = std::numeric_limits<float>::max();
 
     bool foundMergeCandidates = false;
-    for (size_t i = 0; i < K - 1; i++)
+    for (uint32_t i = 0; i < K - 1; i++)
     {
         const div_t tmpI = div(i, static_cast<int>(VMM::VectorSize));
-        for (size_t j = i + 1; j < K; j++)
+        for (uint32_t j = i + 1; j < K; j++)
         {
             const div_t tmpJ = div(j, static_cast<int>(VMM::VectorSize));
             float mergeCost = CalculateMergeCost(vmm, i, j);
@@ -265,14 +265,14 @@ bool VonMisesFisherChiSquareComponentMerger<TVMMFactory>::ThresholdedMergeNext(V
 template <class TVMMFactory>
 float VonMisesFisherChiSquareComponentMerger<TVMMFactory>::MergeNext(VMM &vmm) const
 {
-    int K = vmm._numComponents;
-    int mergeCandidateI = 0;
-    int mergeCandidateJ = 0;
+    uint32_t K = vmm._numComponents;
+    uint32_t mergeCandidateI = 0;
+    uint32_t mergeCandidateJ = 0;
     float minMergeCost = std::numeric_limits<float>::max();
 
-    for (size_t i = 0; i < K - 1; i++)
+    for (uint32_t i = 0; i < K - 1; i++)
     {
-        for (size_t j = i + 1; j < K; j++)
+        for (uint32_t j = i + 1; j < K; j++)
         {
             float mergeCost = CalculateMergeCost(vmm, i, j);
             if (mergeCost < minMergeCost)

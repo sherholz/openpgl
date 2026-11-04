@@ -227,7 +227,7 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::PerformSplitting(VMM
 
     bool stopSplitting = false;
 
-    size_t splitItr = 0;
+    uint32_t splitItr = 0;
 
     VMMFactory vmmFactory;
     typename VMMFactory::FittingStatistics vmmFitStats;
@@ -245,8 +245,8 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::PerformSplitting(VMM
         std::vector<SplitCandidate> splitComps = splitStatistics.getSplitCandidates();
 
         mask.resetToFalse();
-        const size_t numComp = vmm._numComponents;
-        for (size_t k = 0; k < numComp; k++)
+        const uint32_t numComp = vmm._numComponents;
+        for (uint32_t k = 0; k < numComp; k++)
         {
             if (splitComps[k].chiSquareEst > splitThreshold && vmm._numComponents < VMM::MaxComponents)
             {
@@ -304,7 +304,7 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::PerformRecursiveSpli
     SufficientStatistics tempSuffStatistics = suffStatistics;
 
     // bool stopSplitting = false;
-    // size_t splitItr = 0;
+    // uint32_t splitItr = 0;
 
     VMMFactory vmmFactory;
     typename VMMFactory::FittingStatistics vmmFitStats;
@@ -315,7 +315,7 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::PerformRecursiveSpli
 #else
 
 #endif
-    // for (size_t j =0; j<1; j++)
+    // for (uint32_t j =0; j<1; j++)
     {
         numSplits = 0;
         splitStatistics.clearAll();
@@ -324,8 +324,8 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::PerformRecursiveSpli
         std::vector<SplitCandidate> splitComps = splitStatistics.getSplitCandidates();
 
         mask.resetToFalse();
-        const size_t numComp = vmm._numComponents;
-        for (size_t k = 0; k < numComp; k++)
+        const uint32_t numComp = vmm._numComponents;
+        for (uint32_t k = 0; k < numComp; k++)
         {
             if (splitComps[k].chiSquareEst > splitThreshold && vmm._numComponents < VMM::MaxComponents)
             {
@@ -467,7 +467,7 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::UpdateSplitStatistic
 
     typename VMM::SoftAssignment softAssign;
     const embree::vfloat<VMM::VectorSize> zeros(0.f);
-    const int cnt = (splitStats.numComponents + VMM::VectorSize - 1) / VMM::VectorSize;
+    const uint32_t cnt = (splitStats.numComponents + VMM::VectorSize - 1) / VMM::VectorSize;
     // size_t validDataCount = 0.0f;
 
     for (size_t n = 0; n < numData; n++)
@@ -481,7 +481,7 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::UpdateSplitStatistic
             const embree::vfloat<VMM::VectorSize> samplePDF = sample.pdf;
             const embree::vfloat<VMM::VectorSize> value = weight * samplePDF;
             // std::cout << "data[" << n << "]: " << "value: " << value << "\t samplePDF: " << samplePDF;
-            for (size_t k = 0; k < cnt; k++)
+            for (uint32_t k = 0; k < cnt; k++)
             {
                 OPENPGL_ASSERT(embree::all(embree::isvalid(splitStats.splitMeans[k].x)));
                 OPENPGL_ASSERT(embree::all(embree::isvalid(splitStats.splitMeans[k].y)));
@@ -817,7 +817,7 @@ bool VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::SplitComponentIntoTh
             return false;
         }
     }
-    size_t K = vmm._numComponents;
+    uint32_t K = vmm._numComponents;
     // vmm.swapComponents(K-1, idx);
     // suffStats.swapComponentStats(K-1, idx);
     // const div_t tmpI = div(K-1, static_cast<int>(VMM::VectorSize));
@@ -1144,7 +1144,7 @@ std::vector<typename VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::Spli
 VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::ComponentSplitStatistics::getSplitCandidates() const
 {
     std::vector<SplitCandidate> splitCandidates;
-    for (size_t k = 0; k < numComponents; k++)
+    for (uint32_t k = 0; k < numComponents; k++)
     {
         const div_t tmp = div(k, static_cast<int>(VMM::VectorSize));
         SplitCandidate sc;
@@ -1165,9 +1165,9 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::ComponentSplitStatis
     const embree::vfloat<VMM::VectorSize> zeros(0.f);
 
     this->numComponents = _numComponents;
-    const int cnt = (this->numComponents + VMM::VectorSize - 1) / VMM::VectorSize;
+    const uint32_t cnt = (this->numComponents + VMM::VectorSize - 1) / VMM::VectorSize;
 
-    for (size_t k = 0; k < cnt; k++)
+    for (uint32_t k = 0; k < cnt; k++)
     {
         chiSquareMCEstimates[k] = zeros;
         splitWeightedSampleCovariances[k].x = zeros;
@@ -1186,9 +1186,9 @@ void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::ComponentSplitStatis
 template <class TVMMFactory>
 void VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::ComponentSplitStatistics::decay(const float &alpha)
 {
-    const int cnt = (this->numComponents + VMM::VectorSize - 1) / VMM::VectorSize;
+    const uint32_t cnt = (this->numComponents + VMM::VectorSize - 1) / VMM::VectorSize;
 
-    for (size_t k = 0; k < cnt; k++)
+    for (uint32_t k = 0; k < cnt; k++)
     {
         splitWeightedSampleCovariances[k].x *= alpha;
         splitWeightedSampleCovariances[k].y *= alpha;
@@ -1205,7 +1205,7 @@ size_t VonMisesFisherChiSquareComponentSplitter<TVMMFactory>::ComponentSplitStat
 {
     size_t maxIdx = 0;
     float maxChiSquareValue = chiSquareMCEstimates[0][0];
-    for (size_t k = 1; k < numComponents; k++)
+    for (uint32_t k = 1; k < numComponents; k++)
     {
         const div_t tmp = div(k, static_cast<int>(VMM::VectorSize));
         if (chiSquareMCEstimates[tmp.quot][tmp.rem] > maxChiSquareValue)
