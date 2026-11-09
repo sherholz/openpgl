@@ -114,6 +114,7 @@ extern "C"
     struct PGLDebugArguments
     {
         bool fitRegions{true};
+        bool useMinimalDistanceHeuristic{true};
     };
 
     struct PGLFieldArguments

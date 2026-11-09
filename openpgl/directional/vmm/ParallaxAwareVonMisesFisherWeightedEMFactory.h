@@ -48,6 +48,8 @@ struct ParallaxAwareVonMisesFisherWeightedEMFactory
         float meanCosinePriorStrength{0.2f};
         float meanCosinePrior{0.0f};
 
+        bool useMinimalDistanceHeuristic{true};
+
         void init();
 
         void serialize(std::ostream &stream) const;
@@ -1265,7 +1267,14 @@ void ParallaxAwareVonMisesFisherWeightedEMFactory<TVMMDistribution>::prepareSamp
         float norm = sampleVariance.x * sampleVariance.x + sampleVariance.y * sampleVariance.y + sampleVariance.z * sampleVariance.z;
         norm = std::max(FLT_EPSILON, norm);
         float minDistance = std::sqrt(norm);
-        minDistance = 3.f * 3.f * std::sqrt(minDistance);
+        if (cfg.useMinimalDistanceHeuristic)
+        {
+            minDistance = 3.f * 3.f * std::sqrt(minDistance);
+        }
+        else
+        {
+            minDistance = 0.f;
+        }
         OPENPGL_ASSERT(embree::isvalid(sampleVariance));
         OPENPGL_ASSERT(embree::isvalid(minDistance));
         for (size_t n = 0; n < numSamples; n++)
