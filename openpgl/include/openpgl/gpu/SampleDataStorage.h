@@ -152,14 +152,14 @@ public:
             uint32_t flags = 0;
             flags = volume ? flags | openpgl::cpp::SampleData::Flags::EInsideVolume : flags;
 #ifndef USE_RAW_SAMPLE_DATA
-            SampleData sd = {flags, position, direction, ((contribution[0] + contribution[1] + contribution[2]) / 3.f)/pdf, pdf, distance};
+            SampleData sd = {flags, position, direction, (contribution[0] + contribution[1] + contribution[2]) / 3.f, pdf, distance};
 #else
             // TODO: Need to identify why this is not working
             //SampleData sd = {{position[0], position[1], position[2]}, {direction[0], direction[1], direction[2]}, ((contribution[0] + contribution[1] + contribution[2]) / 3.f)/pdf, pdf, distance, flags};
             SampleData sd;
             sd.position = {position[0], position[1], position[2]};
             sd.direction = {direction[0], direction[1], direction[2]};
-            sd.weight = ((contribution[0] + contribution[1] + contribution[2]) / 3.f)/pdf;
+            sd.weight = (contribution[0] + contribution[1] + contribution[2]) / 3.f;
             sd.pdf = pdf;
             sd.distance = distance;
             sd.flags = flags;
