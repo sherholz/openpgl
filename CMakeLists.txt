@@ -3,7 +3,7 @@
 
 ## Global CMake options ##
 
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.10)
 
 set(CMAKE_C_STANDARD 99)
 set(CMAKE_C_STANDARD_REQUIRED ON)
@@ -17,17 +17,15 @@ set(CMAKE_DISABLE_SOURCE_CHANGES ON)
 set(CMAKE_DISABLE_IN_SOURCE_BUILD ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 
-enable_language(CXX)
-include(GNUInstallDirs)
 
 ## Establish project ##
 
 project(openpgl VERSION 0.7.1 LANGUAGES C CXX)
-
+enable_language(CXX)
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} ${PROJECT_SOURCE_DIR}/cmake)
 include(openpgl_macros)
 
-
+include(GNUInstallDirs)
 ##############################################################
 # Platform detection and defaults
 ##############################################################
