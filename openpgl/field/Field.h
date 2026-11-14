@@ -379,6 +379,7 @@ struct Field
     {
         OPENPGL_ASSERT(knnTree.isBuild());
         const uint32_t regionIdx = knnTree.sampleClosestRegionIdx(p, sample);
+        id = regionIdx;
         return regionIdx;
     }
 
@@ -422,7 +423,7 @@ struct Field
         }
     }
 
-    inline void fitRegions(SampleContainerInternal &samples, ZeroValueSampleContainerInternal &zeroValueSamples)
+    inline void fitRegions(SampleContainerInternal &samples, [[maybe_unused]] ZeroValueSampleContainerInternal &zeroValueSamples)
     {
         size_t nGuidingRegions = m_regionStorageContainer.size();
 #if defined(OPENPGL_SHOW_PRINT_OUTS)
@@ -488,7 +489,7 @@ struct Field
         OPENPGL_ASSERT(this->isValid());
     }
 
-    void updateRegions(SampleContainerInternal &samples, ZeroValueSampleContainerInternal &zeroValueSamples)
+    void updateRegions(SampleContainerInternal &samples, [[maybe_unused]] ZeroValueSampleContainerInternal &zeroValueSamples)
     {
         size_t nGuidingRegions = m_regionStorageContainer.size();
 #if defined(OPENPGL_SHOW_PRINT_OUTS)

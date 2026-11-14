@@ -43,7 +43,7 @@ if(CUDAToolkit_FOUND)
     target_compile_definitions(openpgl_gpu_cuda PRIVATE OPENPGL_GPU_CUDA_SUPPORT)
     #target_compile_options(openpgl_gpu_cuda PRIVATE --ftz=true --prec-div=false --prec-sqrt=false --fmad=true)
     #target_compile_options(openpgl_gpu_cuda PRIVATE --ftz=false --prec-div=true --prec-sqrt=true --fmad=false --extended-lambda)
-    target_compile_options(openpgl_gpu_cuda PRIVATE -lineinfo --std=c++17;--use_fast_math;--expt-relaxed-constexpr;--extended-lambda;--forward-unknown-to-host-compiler)
+    target_compile_options(openpgl_gpu_cuda PRIVATE -lineinfo --std=c++17;--use_fast_math;--expt-relaxed-constexpr;--extended-lambda;--forward-unknown-to-host-compiler;--diag-suppress=68)
     add_dependencies(openpgl_gpu_cuda openpgl)
 
     INSTALL(TARGETS openpgl_gpu_cuda RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR})

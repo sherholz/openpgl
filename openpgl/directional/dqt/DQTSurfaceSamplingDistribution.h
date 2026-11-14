@@ -9,16 +9,16 @@ namespace openpgl
 template <class TDirectionalQuadtree>
 struct DQTSurfaceSamplingDistribution : public ISurfaceSamplingDistribution
 {
-    DQTSurfaceSamplingDistribution(){};
+    DQTSurfaceSamplingDistribution() {};
 
-    virtual ~DQTSurfaceSamplingDistribution() override{};
+    virtual ~DQTSurfaceSamplingDistribution() override {};
 
-    virtual void init(const void *distribution, Point3 samplePosition) override
+    virtual void init(const void *distribution, [[maybe_unused]] Point3 samplePosition) override
     {
         this->distribution = *(TDirectionalQuadtree *)distribution;
     };
 
-    inline void applyCosineProduct(const Vector3 &normal) override
+    inline void applyCosineProduct([[maybe_unused]] const Vector3 &normal) override
     {
         // not supported by quadtree
         return;
@@ -49,12 +49,12 @@ struct DQTSurfaceSamplingDistribution : public ISurfaceSamplingDistribution
         return distribution.pdf(dir);
     };
 #ifdef OPENPGL_RADIANCE_CACHES
-    inline Vector3 incomingRadiance(const Vector3 dir, const bool directLightMIS) const override
+    inline Vector3 incomingRadiance([[maybe_unused]] const Vector3 dir, [[maybe_unused]] const bool directLightMIS) const override
     {
         return Vector3(0.f, 0.f, 0.f);
     }
 
-    inline Vector3 irradiance(const Vector3 normal, const bool directLightMIS) const override
+    inline Vector3 irradiance([[maybe_unused]] const Vector3 normal, [[maybe_unused]] const bool directLightMIS) const override
     {
         return Vector3(0.f, 0.f, 0.f);
     }

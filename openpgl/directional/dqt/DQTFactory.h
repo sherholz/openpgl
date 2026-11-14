@@ -72,7 +72,7 @@ class DirectionalQuadtreeFactory
             stream.read(reinterpret_cast<char *>(this), sizeof(*this));
         };
 
-        bool operator==(const Configuration &b) const
+        bool operator==([[maybe_unused]] const Configuration &b) const
         {
             return true;
         }
@@ -95,7 +95,7 @@ class DirectionalQuadtreeFactory
         // TODO this is very ugly
         struct SufficientStatistics
         {
-            void applyParallaxShift(const Distribution &dist, const Vector3 shift) {}
+            void applyParallaxShift([[maybe_unused]] const Distribution &dist, [[maybe_unused]] const Vector3 shift) {}
             bool isValid() const
             {
                 return true;
@@ -155,7 +155,7 @@ class DirectionalQuadtreeFactory
         };
 
         // TODO: Needs to be implmented
-        bool operator==(const Statistics &b) const
+        bool operator==([[maybe_unused]] const Statistics &b) const
         {
             return true;
         }
@@ -169,13 +169,20 @@ class DirectionalQuadtreeFactory
         uint32_t numMerges = 0;
     };
 
-    void prepareSamples(SampleData *samples, const size_t numSamples, const SampleStatistics &sampleStatistics, const Configuration &cfg) const {}
-
-    void updateFluenceEstimate(Distribution &dist, const SampleData *samples, const size_t numSamples, const size_t numZeroValueSamples,
-                               const SampleStatistics &sampleStatistics) const
+    void prepareSamples([[maybe_unused]] SampleData *samples, [[maybe_unused]] const size_t numSamples, [[maybe_unused]] const SampleStatistics &sampleStatistics,
+                        [[maybe_unused]] const Configuration &cfg) const
     {}
 
-    void fit(Distribution &dist, Statistics &stats, const SampleData *samples, const size_t numSamples, const Configuration &cfg, FittingStatistics &fitStats)
+    void updateFluenceEstimate([[maybe_unused]] Distribution &dist, [[maybe_unused]] const SampleData *samples, [[maybe_unused]] const size_t numSamples,
+                               [[maybe_unused]] const size_t numZeroValueSamples, [[maybe_unused]] const SampleStatistics &sampleStatistics) const
+    {}
+
+    void updateVolumeScatterProbability([[maybe_unused]] Distribution &dist, [[maybe_unused]] Statistics &stats, [[maybe_unused]] const SampleData *samples,
+                                        [[maybe_unused]] const size_t numSamples, [[maybe_unused]] const ZeroValueSampleData *zeroValueSamples,
+                                        [[maybe_unused]] const size_t numZeroValueSamples, [[maybe_unused]] const bool varianceBased) const
+    {}
+
+    void fit(Distribution &dist, Statistics &stats, const SampleData *samples, const size_t numSamples, const Configuration &cfg, FittingStatistics &fitStats) const
     {
         for (uint32_t i = 0; i < 5; i++)
         {
@@ -185,7 +192,7 @@ class DirectionalQuadtreeFactory
         }
     }
 
-    void update(Distribution &dist, Statistics &stats, const SampleData *samples, const size_t numSamples, const Configuration &cfg, FittingStatistics &fitStats)
+    void update(Distribution &dist, Statistics &stats, const SampleData *samples, const size_t numSamples, const Configuration &cfg, FittingStatistics &fitStats) const
     {
         Context ctx = {&dist, &stats, &fitStats, samples, numSamples, &cfg};
 
@@ -265,7 +272,7 @@ class DirectionalQuadtreeFactory
         // Compute sampling and split weights
         traverse(
             ctx.stats->nodes.data(),
-            [&](uint32_t i, Rect<float> &rect) {
+            [&]([[maybe_unused]] uint32_t i, [[maybe_unused]] Rect<float> &rect) {
                 return true;  // We want to traverse all nodes
             },
             [&](uint32_t i, Rect<float> &rect) {
@@ -348,12 +355,12 @@ class DirectionalQuadtreeFactory
             // TODO switch to disable this
             traverse(
                 old_nodes.data(),
-                [&](uint32_t i, Rect<float> &rect) {
+                [&](uint32_t i, [[maybe_unused]] Rect<float> &rect) {
                     if (old_nodes[i].offsetChildren > 0)
                         ctx.fitStats->numMerges++;
                     return true;
                 },
-                [&](uint32_t i, Rect<float> &rect) {
+                [&]([[maybe_unused]] uint32_t i, [[maybe_unused]] Rect<float> &rect) {
                 },
                 i, rect);
         }

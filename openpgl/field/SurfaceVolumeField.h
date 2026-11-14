@@ -209,7 +209,7 @@ struct SurfaceVolumeField : public ISurfaceVolumeField
         m_volumeField.deserialize(is);
     }
 
-    virtual bool validate(const bool checkSurface, const bool checkVolume) const override
+    virtual bool validate([[maybe_unused]] const bool checkSurface, [[maybe_unused]] const bool checkVolume) const override
     {
         bool valid = true;
         if (m_surfaceField.isInitialized())
@@ -348,7 +348,7 @@ struct SurfaceVolumeField : public ISurfaceVolumeField
         }
     */
 
-    void ReleaseFieldData(openpgl::gpu::FieldData *fieldGPU, openpgl::gpu::Device *deviceGPU) const override
+    void ReleaseFieldData(openpgl::gpu::FieldData *fieldGPU, [[maybe_unused]] openpgl::gpu::Device *deviceGPU) const override
     {
         KDTree::NodesType *deviceSurfNodes = (KDTree::NodesType *)fieldGPU->m_surfaceTreeLets;
         delete[] deviceSurfNodes;
@@ -376,7 +376,7 @@ struct SurfaceVolumeField : public ISurfaceVolumeField
         fieldGPU->m_numVolumeDistributions = 0;
     }
 
-    void FillFieldData(openpgl::gpu::FieldData *fieldGPU, openpgl::gpu::Device *deviceGPU) const override
+    void FillFieldData(openpgl::gpu::FieldData *fieldGPU, [[maybe_unused]] openpgl::gpu::Device *deviceGPU) const override
     {
         int numSurfaceNodes = m_surfaceField.m_spatialSubdiv.m_numTreeLets;
         fieldGPU->m_numSurfaceTreeLets = numSurfaceNodes;

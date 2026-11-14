@@ -152,7 +152,7 @@ struct ParallaxAwareVonMisesFisherMixture
 
     void setComponentDistance(const size_t &idx, const float &distance);
 
-    void decay(const float alpha)
+    void decay([[maybe_unused]] const float alpha)
     {
 #ifdef OPENPGL_RADIANCE_CACHES
         _numFluenceSamples *= alpha;

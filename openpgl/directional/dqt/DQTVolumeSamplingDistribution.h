@@ -9,11 +9,11 @@ namespace openpgl
 template <class TDirectionalQuadtree>
 struct DQTVolumeSamplingDistribution : public IVolumeSamplingDistribution
 {
-    DQTVolumeSamplingDistribution(){};
+    DQTVolumeSamplingDistribution() {};
 
-    virtual ~DQTVolumeSamplingDistribution() override{};
+    virtual ~DQTVolumeSamplingDistribution() override {};
 
-    virtual void init(const void *distribution, Point3 samplePosition) override
+    virtual void init(const void *distribution, [[maybe_unused]] Point3 samplePosition) override
     {
         this->distribution = *(TDirectionalQuadtree *)distribution;
     };
@@ -39,7 +39,7 @@ struct DQTVolumeSamplingDistribution : public IVolumeSamplingDistribution
     };
 
 #ifdef OPENPGL_RADIANCE_CACHES
-    inline Vector3 incomingRadiance(const Vector3 dir, const bool directLightMIS) const override
+    inline Vector3 incomingRadiance([[maybe_unused]] const Vector3 dir, [[maybe_unused]] const bool directLightMIS) const override
     {
         return Vector3(0.f, 0.f, 0.f);
     }
@@ -49,12 +49,12 @@ struct DQTVolumeSamplingDistribution : public IVolumeSamplingDistribution
         return m_region->getOutgoingRadiance(dir);
     }
 
-    inline Vector3 inScatteredRadiance(const Vector3 dir, const float g, const bool directLightMIS) const override
+    inline Vector3 inScatteredRadiance([[maybe_unused]] const Vector3 dir, [[maybe_unused]] const float g, [[maybe_unused]] const bool directLightMIS) const override
     {
         return Vector3(0.f, 0.f, 0.f);
     }
 
-    inline Vector3 fluence(const bool directLightMIS) const override
+    inline Vector3 fluence([[maybe_unused]] const bool directLightMIS) const override
     {
         return Vector3(0.f, 0.f, 0.f);
     }
@@ -67,7 +67,7 @@ struct DQTVolumeSamplingDistribution : public IVolumeSamplingDistribution
 
     inline void clear() override {};
 
-    inline void applySingleLobeHenyeyGreensteinProduct(const Vector3 &dir, const float meanCosine) override
+    inline void applySingleLobeHenyeyGreensteinProduct([[maybe_unused]] const Vector3 &dir, [[maybe_unused]] const float meanCosine) override
     {
         // not supported by quadtree
         return;

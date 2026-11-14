@@ -55,7 +55,7 @@ struct Device
     ::sycl::queue* q;
     ::sycl::queue _q;
 #endif
-    Device(DeviceTypes dt, void* ptr = nullptr) : m_deviceType(dt) {
+    Device(DeviceTypes dt, [[maybe_unused]] void* ptr = nullptr) : m_deviceType(dt) {
 #if defined(OPENPGL_GPU_SYCL_SUPPORT)
     if (ptr) {
         q = reinterpret_cast<::sycl::queue*>(ptr);
@@ -103,7 +103,7 @@ struct Device
     template <class T>
     T *mallocArray(size_t numElements, bool shared = false)
     {
-        T* ptr = nullptr;
+        [[maybe_unused]] T* ptr = nullptr;
         switch (m_deviceType)
         {
             case EDeviceType_CPU:
