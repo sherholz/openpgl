@@ -42,6 +42,6 @@ struct VMMSingleLobeHenyeyGreensteinOracle
     }
 };
 
-__device__ VMMSingleLobeHenyeyGreensteinOracle vMMSingleLobeHenyeyGreensteinOracle;
+OPENPGL_GPU_CALLABLE VMMSingleLobeHenyeyGreensteinOracle vMMSingleLobeHenyeyGreensteinOracle;
 
 #include "VMMPhaseFunctionDefs.h"
