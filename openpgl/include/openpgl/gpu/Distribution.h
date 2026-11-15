@@ -430,7 +430,7 @@ struct ParallaxAwareVonMisesFisherMixture : public FlatVMM<maxComponents>
 
     OPENPGL_GPU_CALLABLE pgl_vec3f samplePosProductPhase(const pgl_vec3f pos, const pgl_vec3f dir, const float meanCosine, const pgl_vec2f sample) const
     {
-        const VMMPhaseFunctionRepresentation &pfRep = vMMSingleLobeHenyeyGreensteinOracle.getPhaseFunctionRepresentation(meanCosine);
+        const VMMPhaseFunctionRepresentation &pfRep = g_vMMSingleLobeHenyeyGreensteinOracle.getPhaseFunctionRepresentation(meanCosine);
 
         // First, identify component we want to sample
         pgl_vec2f _sample = sample;
@@ -494,7 +494,7 @@ struct ParallaxAwareVonMisesFisherMixture : public FlatVMM<maxComponents>
 
     OPENPGL_GPU_CALLABLE float pdfPosProductPhase(const pgl_vec3f pos, const pgl_vec3f vdir, const float meanCosine, const pgl_vec3f dir) const
     {
-        const VMMPhaseFunctionRepresentation &pfRep = vMMSingleLobeHenyeyGreensteinOracle.getPhaseFunctionRepresentation(meanCosine);
+        const VMMPhaseFunctionRepresentation &pfRep = g_vMMSingleLobeHenyeyGreensteinOracle.getPhaseFunctionRepresentation(meanCosine);
         
         float sum{0.f}, pdf{0.f};
         for (int i = 0; i < this->_numComponents; i++) {

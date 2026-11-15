@@ -496,6 +496,7 @@ struct SurfaceSamplingDistribution : public SurfaceSamplingDistributionData
         m_pos = pos;
         m_field = field;
         float _pos[3] = {pos.x, pos.y, pos.z};
+        m_normal = {0.f, 0.f, 0.f};
         m_idx = ((const FieldGPU*) m_field)->getSurfaceDistributionIdxAtPos(_pos);
 
         return m_idx >= 0;
@@ -506,36 +507,60 @@ struct SurfaceSamplingDistribution : public SurfaceSamplingDistributionData
         m_normal = normal;
     }
 
-
     OPENPGL_GPU_CALLABLE void Clear()
     {
         m_field = nullptr;
         m_pos = {0.f, 0.f, 0.f};
+        m_normal = {0.f, 0.f, 0.f};
         m_idx = -1;
+    }
+
+    OPENPGL_GPU_CALLABLE bool CosineProduct() const
+    {
+        return (m_normal.x + m_normal.y + m_normal.z) == 0.f;
     }
 
     OPENPGL_GPU_CALLABLE pgl_vec3f Sample(const pgl_point2f &sample2D) const
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
         const FieldGPU::Distribution *surfaceDistributions = static_cast<const FieldGPU::Distribution *>(field->m_surfaceDistributions);
-        return surfaceDistributions[m_idx].samplePos(m_pos, sample2D);
+        if (CosineProduct()) {
+            return surfaceDistributions[m_idx].samplePos(m_pos, sample2D);
+        } 
+        else
+        {
+            return surfaceDistributions[m_idx].samplePosProductCosine(m_pos, m_normal, sample2D);
+        }
     }
 
     OPENPGL_GPU_CALLABLE float PDF(const pgl_vec3f &direction) const
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
         const FieldGPU::Distribution *surfaceDistributions = static_cast<const FieldGPU::Distribution *>(field->m_surfaceDistributions);
-        return surfaceDistributions[m_idx].pdfPos(m_pos, direction);
+        if (CosineProduct()) {
+            return surfaceDistributions[m_idx].pdfPos(m_pos, direction);
+        }
+        else
+        {
+            return surfaceDistributions[m_idx].pdfPosProductCosine(m_pos, m_normal, direction);
+        }
     }
 
     OPENPGL_GPU_CALLABLE float SamplePDF(const pgl_point2f &sample2D, pgl_vec3f &direction) const
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
         const FieldGPU::Distribution *surfaceDistributions = static_cast<const FieldGPU::Distribution *>(field->m_surfaceDistributions);
-        direction = surfaceDistributions[m_idx].samplePos(m_pos, sample2D);
-        return surfaceDistributions[m_idx].pdfPos(m_pos, direction);
+        if (CosineProduct()) {
+            direction = surfaceDistributions[m_idx].samplePos(m_pos, sample2D);
+            return surfaceDistributions[m_idx].pdfPos(m_pos, direction);
+        }
+        else
+        {
+            direction = surfaceDistributions[m_idx].samplePosProductCosine(m_pos, m_normal, sample2D);
+            return surfaceDistributions[m_idx].pdfPosProductCosine(m_pos, m_normal, direction);
+        }
     }
-
+/*
     OPENPGL_GPU_CALLABLE pgl_vec3f SampleProduct(const pgl_point2f &sample2D) const
     {
         // TODO
@@ -560,7 +585,7 @@ struct SurfaceSamplingDistribution : public SurfaceSamplingDistributionData
         direction = surfaceDistributions[m_idx].samplePosProductCosine(m_pos, m_normal, sample2D);
         return surfaceDistributions[m_idx].pdfPosProductCosine(m_pos, m_normal, direction);
     }
-
+*/
     OPENPGL_GPU_CALLABLE float IncomingRadiancePDF(const pgl_vec3f &direction) const
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
@@ -570,7 +595,7 @@ struct SurfaceSamplingDistribution : public SurfaceSamplingDistributionData
 
     OPENPGL_GPU_CALLABLE bool SupportsApplyCosineProduct() const
     {
-        return false;
+        return true;
     }
 
     OPENPGL_GPU_CALLABLE uint32_t GetId() const
@@ -637,6 +662,11 @@ struct VolumeSamplingDistribution : public VolumeSamplingDistributionData
         m_meanCosine = meanCosine;
     }
 
+    OPENPGL_GPU_CALLABLE bool HGProduct() const
+    {
+        return (m_dir.x + m_dir.y + m_dir.z) == 0.f;
+    }
+
     OPENPGL_GPU_CALLABLE void SetPhaseFunction(const float g)
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
@@ -647,6 +677,8 @@ struct VolumeSamplingDistribution : public VolumeSamplingDistributionData
     {
         m_field = nullptr;
         m_pos = {0.f, 0.f, 0.f};
+        m_dir = {0.f, 0.f, 0.f};
+        m_meanCosine = 0.f;
         m_idx = -1;
     }
 
@@ -654,24 +686,60 @@ struct VolumeSamplingDistribution : public VolumeSamplingDistributionData
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
         const FieldGPU::Distribution *volumeDistributions = static_cast<const FieldGPU::Distribution *>(field->m_volumeDistributions);
-        return volumeDistributions[m_idx].samplePos(m_pos, sample2D);
+        if(HGProduct())
+        {
+            return volumeDistributions[m_idx].samplePos(m_pos, sample2D);
+        }
+        else
+        {
+#if defined(OPENPGL_GPU_CPU)
+            return volumeDistributions[m_idx].samplePosProductPhase(m_pos, m_dir, m_meanCosine, sample2D);
+#else
+            return volumeDistributions[m_idx].samplePos(m_pos, sample2D);
+#endif
+        }
     }
 
     OPENPGL_GPU_CALLABLE float PDF(const pgl_vec3f &direction) const
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
         const FieldGPU::Distribution *volumeDistributions = static_cast<const FieldGPU::Distribution *>(field->m_volumeDistributions);
-        return volumeDistributions[m_idx].pdfPos(m_pos, direction);
+        if(HGProduct())
+        {
+            return volumeDistributions[m_idx].pdfPos(m_pos, direction);
+        }
+        else
+        {
+#if defined(OPENPGL_GPU_CPU)
+            return volumeDistributions[m_idx].pdfPosProductPhase(m_pos, m_dir, m_meanCosine, direction);
+#else
+            return volumeDistributions[m_idx].pdfPos(m_pos, direction);
+#endif
+        }
     }
 
     OPENPGL_GPU_CALLABLE float SamplePDF(const pgl_point2f &sample2D, pgl_vec3f &direction) const
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
         const FieldGPU::Distribution *volumeDistributions = static_cast<const FieldGPU::Distribution *>(field->m_volumeDistributions);
-        direction = volumeDistributions[m_idx].samplePos(m_pos, sample2D);
-        return volumeDistributions[m_idx].pdfPos(m_pos, direction);
-    }
 
+        if(HGProduct())
+        {
+            direction = volumeDistributions[m_idx].samplePos(m_pos, sample2D);
+            return volumeDistributions[m_idx].pdfPos(m_pos, direction);
+        }
+        else
+        {
+#if defined(OPENPGL_GPU_CPU)
+            direction = volumeDistributions[m_idx].samplePosProductPhase(m_pos, m_dir, m_meanCosine, sample2D);
+            return volumeDistributions[m_idx].pdfPosProductPhase(m_pos, m_dir, m_meanCosine, direction);
+#else
+            direction = volumeDistributions[m_idx].samplePos(m_pos, sample2D);
+            return volumeDistributions[m_idx].pdfPos(m_pos, direction);    
+#endif
+        }
+    }
+/*
     OPENPGL_GPU_CALLABLE pgl_vec3f SampleProduct(const pgl_point2f &sample2D) const
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
@@ -697,7 +765,7 @@ struct VolumeSamplingDistribution : public VolumeSamplingDistributionData
         return volumeDistributions[m_idx].pdfPosProductPhase(m_pos, m_dir, m_meanCosine, direction);
         direction = volumeDistributions[m_idx].samplePos(m_pos, sample2D);
     }
-
+*/
     OPENPGL_GPU_CALLABLE float IncomingRadiancePDF(const pgl_vec3f &direction) const
     {
         const FieldGPU* field = static_cast<const FieldGPU *>(m_field);
